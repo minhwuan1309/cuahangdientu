@@ -9,12 +9,14 @@ const createNewBrand = asyncHandler(async (req, res) => {
     })
 })
 const getBrands = asyncHandler(async (req, res) => {
-    const response = await Brand.find()
-    return res.json({
-        success: response ? true : false,
-        brands: response ? response : 'Cannot get brand'
-    })
+    const brands = await Brand.find()
+    if(brands){
+        return res.status(200).json({success: true, brands});
+    }else{
+        return res.status(404).json({success: false, message: 'No brands found'});
+    }
 })
+
 const updateBrand = asyncHandler(async (req, res) => {
     const { bid } = req.params
     const response = await Brand.findByIdAndUpdate(bid, req.body, { new: true })

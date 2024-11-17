@@ -7,8 +7,3 @@ export const getNewProducts = createAsyncThunk('product/newProducts', async (dat
     return response.products
 })
 
-export const getBrands = createAsyncThunk('product/brands', async(data, {rejectWithValue})=>{
-    const response = await apis.apiGetBrands({ sort: '-createdAt' })
-    if (!response.success) return rejectWithValue(response)
-    return response.brands
-} )

@@ -4,20 +4,25 @@ const slugify = require("slugify")
 const makeSKU = require("uniqid")
 
 const createProduct = asyncHandler(async (req, res) => {
-  const { title, price, description, brand, category, color } = req.body
-  const thumb = req?.files?.thumb[0]?.path
-  const images = req.files?.images?.map((el) => el.path)
+  const { title, price, description, brand, category, color } = req.body;
+  const thumb = req?.files?.thumb[0]?.path;
+  const images = req.files?.images?.map((el) => el.path);
+
   if (!(title && price && description && brand && category && color))
-    throw new Error("Missing inputs")
-  req.body.slug = slugify(title)
-  if (thumb) req.body.thumb = thumb
-  if (images) req.body.images = images
-  const newProduct = await Product.create(req.body)
+    throw new Error("Missing inputs");
+
+  req.body.slug = slugify(title);
+
+  if (thumb) req.body.thumb = thumb;
+  if (images) req.body.images = images;
+
+  const newProduct = await Product.create(req.body);
+  
   return res.status(200).json({
     success: newProduct ? true : false,
     mes: newProduct ? "Created" : "Failed.",
-  })
-})
+  });
+});
 const getProduct = asyncHandler(async (req, res) => {
   const { pid } = req.params
   const product = await Product.findById(pid).populate({

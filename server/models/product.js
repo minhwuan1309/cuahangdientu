@@ -22,7 +22,6 @@ var productSchema = new mongoose.Schema({
     },
     thumb: {
         type: String,
-        required: true
     },
     price: {
         type: Number,
@@ -45,7 +44,6 @@ var productSchema = new mongoose.Schema({
     },
     color: {
         type: String,
-        enum: ['Black', 'White', 'Red', 'Green', 'Brown', 'Blue']
     },
     ratings: [
         {
