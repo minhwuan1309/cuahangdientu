@@ -5,10 +5,10 @@ const {
   generateRefreshToken,
 } = require("../middlewares/jwt")
 const jwt = require("jsonwebtoken")
-const sendMail = require("../ultils/sendMail")
+const sendMail = require("../utils/sendMail")
 const crypto = require("crypto")
 const makeToken = require("uniqid")
-const { users } = require("../ultils/constant")
+const { users } = require("../utils/constant")
 const user = require("../models/user")
 
 // const register = asyncHandler(async (req, res) => {
