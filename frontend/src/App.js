@@ -29,7 +29,7 @@ import {
   History,
   Wishlist,
   Checkout,
-} from "pages/member"
+} from "pages/user"
 import path from "ultils/path"
 import { getCategories } from "store/app/asyncActions"
 import { useDispatch, useSelector } from "react-redux"
