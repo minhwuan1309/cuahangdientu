@@ -1,30 +1,32 @@
-import React, { Fragment, memo, useEffect, useState } from "react"
-import logo from "assets/logo.png"
-import icons from "ultils/icons"
-import { Link } from "react-router-dom"
-import path from "ultils/path"
-import { useDispatch, useSelector } from "react-redux"
-import { logout } from "store/user/userSlice"
-import withBaseComponent from "hocs/withBaseComponent"
-import { showCart } from "store/app/appSlice"
+import React, { Fragment, memo, useEffect, useState } from "react";
+import logo from "assets/logo.png";
+import icons from "ultils/icons";
+import { Link } from "react-router-dom";
+import path from "ultils/path";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "store/user/userSlice";
+import withBaseComponent from "hocs/withBaseComponent";
+import { showCart } from "store/app/appSlice";
 
-const { RiPhoneFill, MdEmail, BsHandbagFill, FaUserCircle } = icons
+const { RiPhoneFill, MdEmail, BsHandbagFill, FaUserCircle } = icons;
+
 const Header = () => {
-  const dispatch = useDispatch()
-  const { current } = useSelector((state) => state.user)
-  const [isShowOption, setIsShowOption] = useState(false)
+  const dispatch = useDispatch();
+  const { current } = useSelector((state) => state.user);
+  const [isShowOption, setIsShowOption] = useState(false);
+
   useEffect(() => {
     const handleClickoutOptions = (e) => {
-      const profile = document.getElementById("profile")
-      if (!profile?.contains(e.target)) setIsShowOption(false)
-    }
+      const profile = document.getElementById("profile");
+      if (!profile?.contains(e.target)) setIsShowOption(false);
+    };
 
-    document.addEventListener("click", handleClickoutOptions)
+    document.addEventListener("click", handleClickoutOptions);
 
     return () => {
-      document.removeEventListener("click", handleClickoutOptions)
-    }
-  }, [])
+      document.removeEventListener("click", handleClickoutOptions);
+    };
+  }, []);
 
   return (
     <div className="md:w-main w-full flex justify-between md:h-[120px] py-[30px]">
@@ -52,20 +54,22 @@ const Header = () => {
         </div>
         {current && (
           <Fragment>
-            <div
-              onClick={() => dispatch(showCart())}
-              className="cursor-pointer flex items-center justify-center gap-2 px-6 border-r"
-            >
-              <span className="relative md:hidden inline-block">
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-600 flex items-center justify-center text-[10px] text-white rounded-full">
-                  {current?.cart?.length || 0}
+            {+current.role !== 1945 && (
+              <div
+                onClick={() => dispatch(showCart())}
+                className="cursor-pointer flex items-center justify-center gap-2 px-6 border-r"
+              >
+                <span className="relative md:hidden inline-block">
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-600 flex items-center justify-center text-[10px] text-white rounded-full">
+                    {current?.cart?.length || 0}
+                  </span>
+                  <BsHandbagFill size={20} color="red" />
                 </span>
-                <BsHandbagFill size={20} color="red" />
-              </span>
-              <span className="hidden md:inline-block">{`${
-                current?.cart?.length || 0
-              } item(s)`}</span>
-            </div>
+                <span className="hidden md:inline-block">{`${
+                  current?.cart?.length || 0
+                } item(s)`}</span>
+              </div>
+            )}
             <div
               className="flex cursor-pointer items-center justify-center px-6 gap-2 relative"
               onClick={() => setIsShowOption((prev) => !prev)}
@@ -105,7 +109,7 @@ const Header = () => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

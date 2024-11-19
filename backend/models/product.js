@@ -18,10 +18,12 @@ var productSchema = new mongoose.Schema({
         required: true,
     },
     brand: {
-        type: String,   
+        type: String,
+        required: true
     },
     thumb: {
         type: String,
+        required: true
     },
     price: {
         type: Number,
@@ -44,6 +46,7 @@ var productSchema = new mongoose.Schema({
     },
     color: {
         type: String,
+        require: true
     },
     ratings: [
         {

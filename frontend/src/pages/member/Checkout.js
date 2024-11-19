@@ -115,6 +115,7 @@ const Checkout = ({ dispatch, navigate }) => {
                 <option value="">Chọn</option>
                 <option value="OFFLINE">Thanh toán khi nhận hàng</option>
                 <option value="ONLINE">Thanh toán Paypal</option>
+                <option value="QR">Thanh toán Momo</option>
               </select>
             </div>
             {paymentMethod === "ONLINE" && (
@@ -144,7 +145,7 @@ const Checkout = ({ dispatch, navigate }) => {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default withBaseComponent(Checkout)

@@ -151,7 +151,7 @@ const Login = () => {
         </div>
       )}
       <img
-        src="https://img.freepik.com/premium-photo/shopping-cart-card-icon-discounts_116441-26066.jpg"
+        src="https://img.freepik.com/premium-vector/blue-light-wave-abstract-background_230977-4201.jpg?semt=ais_hybrid"
         alt=""
         className="w-full h-full object-cover"
       />
@@ -243,7 +243,7 @@ const Login = () => {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default Login
