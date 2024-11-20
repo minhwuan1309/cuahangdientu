@@ -1,7 +1,6 @@
 import withBaseComponent from "hocs/withBaseComponent"
 import React, { memo } from "react"
-import { renderStarFromNumber, formatMoney } from "ultils/helpers"
-import path from "ultils/path"
+import { renderStarFromNumber, formatMoney } from "utils/helpers"
 
 const ProductCard = ({
   price,

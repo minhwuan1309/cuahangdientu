@@ -1,9 +1,9 @@
 import React, { memo, useEffect, useState } from "react"
-import { navigation } from "ultils/contants"
+import { navigation } from "utils/contants"
 import { NavLink, createSearchParams, useNavigate } from "react-router-dom"
 import InputForm from "components/inputs/InputForm"
 import { useForm } from "react-hook-form"
-import path from "ultils/path"
+import path from "utils/path"
 import { IoMenuSharp } from "react-icons/io5"
 
 const Navigation = () => {

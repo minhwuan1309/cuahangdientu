@@ -11,15 +11,15 @@ import {
 } from "components"
 import Slider from "react-slick"
 import ReactImageMagnify from "react-image-magnify"
-import { formatMoney, fotmatPrice, renderStarFromNumber } from "ultils/helpers"
-import { productExtraInfomation } from "ultils/contants"
+import { formatMoney, fotmatPrice, renderStarFromNumber } from "utils/helpers"
+import { productExtraInfomation } from "utils/contants"
 import DOMPurify from "dompurify"
 import clsx from "clsx"
 import { useSelector } from "react-redux"
 import withBaseComponent from "hocs/withBaseComponent"
 import { getCurrent } from "store/user/asyncActions"
 import { toast } from "react-toastify"
-import path from "ultils/path"
+import path from "utils/path"
 import Swal from "sweetalert2"
 
 const settings = {

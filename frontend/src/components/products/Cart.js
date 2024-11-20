@@ -4,12 +4,12 @@ import React, { memo } from 'react'
 import { AiFillCloseCircle } from 'react-icons/ai'
 import { useSelector } from 'react-redux'
 import { showCart } from 'store/app/appSlice'
-import { formatMoney } from 'ultils/helpers'
+import { formatMoney } from 'utils/helpers'
 import { ImBin } from 'react-icons/im'
 import { apiRemoveCart } from 'apis'
 import { getCurrent } from 'store/user/asyncActions'
 import { toast } from 'react-toastify'
-import path from 'ultils/path'
+import path from 'utils/path'
 
 const Cart = ({ dispatch, navigate }) => {
     const { currentCart } = useSelector(state => state.user)

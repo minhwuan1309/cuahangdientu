@@ -1,6 +1,6 @@
 import React, { memo, Fragment, useState } from "react"
 import avatar from "assets/avatarDefault.png"
-import { memberSidebar } from "ultils/contants"
+import { memberSidebar } from "utils/contants"
 import { NavLink, Link } from "react-router-dom"
 import clsx from "clsx"
 import { AiOutlineCaretDown, AiOutlineCaretRight } from "react-icons/ai"

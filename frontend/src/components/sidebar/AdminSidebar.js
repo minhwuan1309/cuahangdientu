@@ -1,6 +1,6 @@
 import React, { memo, Fragment, useState } from "react"
 import logo from "assets/logo.png"
-import { adminSidebar } from "ultils/contants"
+import { adminSidebar } from "utils/contants"
 import { NavLink, Link, useNavigate } from "react-router-dom"
 import clsx from "clsx"
 import { AiOutlineCaretDown, AiOutlineCaretRight } from "react-icons/ai"

@@ -14,7 +14,7 @@ import {
 } from "../../components"
 import { apiGetProducts } from "../../apis"
 import Masonry from "react-masonry-css"
-import { sorts } from "../../ultils/contants"
+import { sorts } from "../../utils/contants"
 
 const breakpointColumnsObj = {
   default: 4,

@@ -5,7 +5,7 @@ import moment from "moment"
 import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { createSearchParams, useSearchParams } from "react-router-dom"
-import { statusOrders } from "ultils/contants"
+import { statusOrders } from "utils/contants"
 
 const History = ({ navigate, location }) => {
   const [orders, setOrders] = useState(null)

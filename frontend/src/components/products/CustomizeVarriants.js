@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { showModal } from 'store/app/appSlice'
 import Swal from 'sweetalert2'
-import { getBase64 } from 'ultils/helpers'
+import { getBase64 } from 'utils/helpers'
 
 const CustomizeVarriants = ({ customizeVarriant, setCustomizeVarriant, render }) => {
     const [preview, setPreview] = useState({

@@ -1,7 +1,7 @@
 import { apiGetBlogs } from "apis/blog"
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import path from "ultils/path"
+import path from "utils/path"
 
 const Blogs = () => {
   const [blogs, setBlogs] = useState()

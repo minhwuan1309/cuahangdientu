@@ -1,6 +1,6 @@
 import SelectQuantity from 'components/common/SelectQuantity'
 import React, { useEffect, useState } from 'react'
-import { formatMoney } from 'ultils/helpers'
+import { formatMoney } from 'utils/helpers'
 import { updateCart } from 'store/user/userSlice'
 import withBaseComponent from 'hocs/withBaseComponent'
 const OrderItem = ({ dispatch, color, dfQuantity = 1, price, title, thumbnail, pid }) => {
