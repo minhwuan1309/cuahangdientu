@@ -1,8 +1,8 @@
 import React, { Fragment, memo, useEffect, useState } from "react";
 import logo from "assets/logo.png";
-import icons from "ultils/icons";
+import icons from "utils/icons";
 import { Link } from "react-router-dom";
-import path from "ultils/path";
+import path from "utils/path";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "store/user/userSlice";
 import withBaseComponent from "hocs/withBaseComponent";
@@ -54,7 +54,7 @@ const Header = () => {
         </div>
         {current && (
           <Fragment>
-            {+current.role !== 1945 && (
+            {![1945, 1980].includes(+current.role) && (
               <div
                 onClick={() => dispatch(showCart())}
                 className="cursor-pointer flex items-center justify-center gap-2 px-6 border-r"
@@ -82,18 +82,20 @@ const Header = () => {
                   onClick={(e) => e.stopPropagation()}
                   className="absolute top-full flex-col flex right-4 md:left-[16px] bg-gray-100 border md:min-w-[150px] py-2"
                 >
-                  <Link
-                    className="p-2 w-full hover:bg-sky-100"
-                    to={`/${path.MEMBER}/${path.PERSONAL}`}
-                  >
-                    Personal
-                  </Link>
-                  {+current.role === 1945 && (
+                  {+current.role === 1979 && (
+                    <Link
+                      className="p-2 w-full hover:bg-sky-100"
+                      to={`/${path.MEMBER}/${path.PERSONAL}`}
+                    >
+                      Personal
+                    </Link>
+                  )}
+                  {[1945, 1980].includes(+current.role) && (
                     <Link
                       className="p-2 w-full hover:bg-sky-100"
                       to={`/${path.ADMIN}/${path.DASHBOARD}`}
                     >
-                      Admin workspace
+                      Workspace
                     </Link>
                   )}
                   <span

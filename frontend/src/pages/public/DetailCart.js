@@ -4,8 +4,8 @@ import withBaseComponent from 'hocs/withBaseComponent'
 import { useSelector } from 'react-redux'
 import { Link, createSearchParams } from 'react-router-dom'
 import Swal from 'sweetalert2'
-import { formatMoney } from 'ultils/helpers'
-import path from 'ultils/path'
+import { formatMoney } from 'utils/helpers'
+import path from 'utils/path'
 
 const DetailCart = ({ location, navigate }) => {
     const { currentCart, current } = useSelector(state => state.user)

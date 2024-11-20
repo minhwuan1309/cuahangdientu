@@ -1,9 +1,9 @@
 import React, { useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import path from "ultils/path"
+import path from "utils/path"
 import { getCurrent } from "store/user/asyncActions"
 import { useSelector, useDispatch } from "react-redux"
-import icons from "ultils/icons"
+import icons from "utils/icons"
 import { logout, clearMessage } from "store/user/userSlice"
 import Swal from "sweetalert2"
 
@@ -32,15 +32,15 @@ const TopHeaders = () => {
   }, [mes])
   return (
     <div className="h-[38px] w-full bg-main flex items-center justify-center">
-      <div className="w-main flex items-center justify-end text-xs text-white">
+      <div className="w-main flex items-center justify-end text-[18px] text-white">
         {isLoggedIn && current ? (
-          <div className=" flex gap-4 w-full md:w-fit text-sm justify-between md:justify-start items-center">
+          <div className=" flex gap-4 w-full md:w-fit text-[18px] justify-between md:justify-start items-center">
             <span className="pl-2">{`Welcome, ${current?.lastname} ${current?.firstname}`}</span>
             <span
               onClick={() => dispatch(logout())}
               className="hover:rounded-full hover:bg-gray-200 cursor-pointer hover:text-main p-2"
             >
-              <AiOutlineLogout size={18} />
+              <AiOutlineLogout size={20} />
             </span>
           </div>
         ) : (
@@ -50,7 +50,7 @@ const TopHeaders = () => {
         )}
       </div>
     </div>
-  )
+  );
 }
 
 export default TopHeaders

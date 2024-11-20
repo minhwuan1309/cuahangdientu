@@ -127,7 +127,7 @@ const Checkout = ({ dispatch, navigate }) => {
                       +currentCart?.reduce(
                         (sum, el) => +el?.price * el.quantity + sum,
                         0
-                      ) / 23500
+                      ) / 25400
                     ),
                     address: current?.address,
                   }}
@@ -136,7 +136,7 @@ const Checkout = ({ dispatch, navigate }) => {
                     +currentCart?.reduce(
                       (sum, el) => +el?.price * el.quantity + sum,
                       0
-                    ) / 23500
+                    ) / 25400
                   )}
                 />
               </div>

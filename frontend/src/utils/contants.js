@@ -4,23 +4,18 @@ import icons from "./icons"
 export const navigation = [
   {
     id: 1,
-    value: "HOME",
+    value: "TRANG CHÍNH",
     path: `/${path.HOME}`,
   },
   {
     id: 2,
-    value: "PRODUCTS",
+    value: "SẢN PHẨM",
     path: `/${path.PRODUCTS}`,
   },
   {
     id: 3,
     value: "BLOGS",
     path: `/${path.BLOGS}`,
-  },
-  {
-    id: 4,
-    value: "OUR SERVICES",
-    path: `/${path.OUR_SERVICES}`,
   },
   {
     id: 5,
@@ -125,62 +120,62 @@ export const sorts = [
   {
     id: 1,
     value: "-sold",
-    text: "Best selling",
+    text: "Bán chạy",
   },
   {
     id: 2,
     value: "-title",
-    text: "Alphabetically, A-Z",
+    text: " A-Z",
   },
   {
     id: 3,
     value: "title",
-    text: "Alphabetically, Z-A",
+    text: "Z-A",
   },
   {
     id: 4,
     value: "-price",
-    text: "Price, high to low",
+    text: "Giá, cao - thấp ",
   },
   {
     id: 5,
     value: "price",
-    text: "Price, low to high",
+    text: "Giá, thấp - cao ",
   },
   {
     id: 6,
     value: "-createdAt",
-    text: "Date, new to old",
+    text: "Mới",
   },
   {
     id: 7,
     value: "createdAt",
-    text: "Date, old to new",
+    text: "Cũ",
   },
 ]
 
 export const voteOptions = [
   {
     id: 1,
-    text: "Terrible",
+    text: "Rất Tệ",
   },
   {
     id: 2,
-    text: "Bad",
+    text: "Tệ",
   },
   {
     id: 3,
-    text: "Neutral",
+    text: "Trung",
   },
 
   {
     id: 4,
-    text: "Good",
+    text: "Khá",
   },
 
   {
     id: 5,
-    text: "Perfect",
+    text: "Tốt",
   },
 ]
 const { AiOutlineDashboard, MdGroups, TbBrandProducthunt, RiBillLine } = icons
@@ -195,22 +190,22 @@ export const adminSidebar = [
   {
     id: 2,
     type: "SINGLE",
-    text: "Manage users",
+    text: "Quản lý account",
     path: `/${path.ADMIN}/${path.MANAGE_USER}`,
     icon: <MdGroups size={20} />,
   },
   {
     id: 3,
     type: "PARENT",
-    text: "Products",
+    text: "Sản phẩm",
     icon: <TbBrandProducthunt size={20} />,
     submenu: [
       {
-        text: "Create product",
+        text: "Thêm sản phẩm mới",
         path: `/${path.ADMIN}/${path.CREATE_PRODUCTS}`,
       },
       {
-        text: "Manage products",
+        text: "Quản lý sản phẩm",
         path: `/${path.ADMIN}/${path.MANAGE_PRODUCTS}`,
       },
     ],
@@ -218,7 +213,7 @@ export const adminSidebar = [
   {
     id: 4,
     type: "SINGLE",
-    text: "Manage orders",
+    text: "Quản lý orders",
     path: `/${path.ADMIN}/${path.MANAGE_ORDER}`,
     icon: <RiBillLine size={20} />,
   },
@@ -229,11 +224,11 @@ export const adminSidebar = [
     icon: <TbBrandProducthunt size={20} />,
     submenu: [
       {
-        text: "Create blog",
+        text: "Tạo bài blog",
         path: `/${path.ADMIN}/${path.CREATE_BLOG}`,
       },
       {
-        text: "Manage blogs",
+        text: "Quản lý bài blog",
         path: `/${path.ADMIN}/${path.MANAGE_BLOGS}`,
       },
     ],
@@ -243,28 +238,28 @@ export const memberSidebar = [
   {
     id: 1,
     type: "SINGLE",
-    text: "Personal",
+    text: "Thông tin cá nhân",
     path: `/${path.MEMBER}/${path.PERSONAL}`,
     icon: <AiOutlineDashboard size={20} />,
   },
   {
     id: 2,
     type: "SINGLE",
-    text: "My cart",
+    text: "Giỏ hàng",
     path: `/${path.MEMBER}/${path.MY_CART}`,
     icon: <MdGroups size={20} />,
   },
   {
     id: 4,
     type: "SINGLE",
-    text: "Buy histories",
+    text: "Lịch sử mua hàng",
     path: `/${path.MEMBER}/${path.HISTORY}`,
     icon: <RiBillLine size={20} />,
   },
   {
     id: 40,
     type: "SINGLE",
-    text: "Wishlist",
+    text: "Danh sách yêu thích",
     path: `/${path.MEMBER}/${path.WISHLIST}`,
     icon: <RiBillLine size={20} />,
   },
@@ -276,10 +271,15 @@ export const roles = [
     value: "Admin",
   },
   {
+    code: 1980,
+    value: "Employee",
+  },
+  {
     code: 1979,
     value: "User",
   },
-]
+];
+
 export const blockStatus = [
   {
     code: true,

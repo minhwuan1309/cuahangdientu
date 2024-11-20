@@ -42,7 +42,7 @@ const Personal = ({ navigate }) => {
     return (
         <div className='w-full relative px-4'>
             <header className='text-3xl font-semibold py-4 border-b border-b-blue-200'>
-                Personal
+                Thông tin cá nhân
             </header>
             <form onSubmit={handleSubmit(handleUpdateInfor)} className='w-3/5 mx-auto py-8 flex flex-col gap-4'>
                 <InputForm

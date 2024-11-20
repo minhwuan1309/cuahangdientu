@@ -89,7 +89,7 @@ const Product = ({
   return (
     <div className={clsx("w-full col-span-1 text-base px-[10px]", className)}>
       <div
-        className="w-full border p-[15px] flex flex-col items-center"
+        className="w-full border p-[15px] flex flex-col items-center cursor-pointer"
         onClick={(e) =>
           navigate(
             `/${productData?.category?.toLowerCase()}/${productData?._id}/${
@@ -98,53 +98,53 @@ const Product = ({
           )
         }
         onMouseEnter={(e) => {
-          e.stopPropagation()
-          setIsShowOption(true)
+          e.stopPropagation();
+          setIsShowOption(true);
         }}
         onMouseLeave={(e) => {
-          e.stopPropagation()
-          setIsShowOption(false)
+          e.stopPropagation();
+          setIsShowOption(false);
         }}
       >
         <div className="w-full relative">
           {isShowOption && (
             <div className="absolute bottom-[-10px] left-0 right-0 flex justify-center gap-2 animate-slide-top">
-              <span
-                title="Quick view"
-                onClick={(e) => handleClickOptions(e, "QUICK_VIEW")}
-              >
-                <SelectOption icon={<AiFillEye />} />
-              </span>
-              {current?.cart?.some(
-                (el) => el.product === productData._id.toString()
-              ) ? (
-                <span title="Added to Cart">
-                  <SelectOption icon={<BsFillCartCheckFill color="green" />} />
-                </span>
-              ) : (
+              {!["1945", "1980"].includes(current?.role?.toString()) &&
+                (current?.cart?.some(
+                  (el) => el.product === productData._id.toString()
+                ) ? (
+                  <span title="Added to Cart">
+                    <SelectOption
+                      icon={<BsFillCartCheckFill color="green" />}
+                    />
+                  </span>
+                ) : (
+                  <span
+                    title="Add to Cart"
+                    onClick={(e) => handleClickOptions(e, "CART")}
+                  >
+                    <SelectOption icon={<BsFillCartPlusFill />} />
+                  </span>
+                ))}
+              {/* Hide "Add to Wishlist" for ADMIN and EMPLOYEE */}
+              {!["1945", "1980"].includes(current?.role?.toString()) && (
                 <span
-                  title="Add to Cart"
-                  onClick={(e) => handleClickOptions(e, "CART")}
+                  title="Add to Wishlist"
+                  onClick={(e) => handleClickOptions(e, "WISHLIST")}
                 >
-                  <SelectOption icon={<BsFillCartPlusFill />} />
+                  <SelectOption
+                    icon={
+                      <BsFillSuitHeartFill
+                        color={
+                          current?.wishlist?.some((i) => i._id === pid)
+                            ? "red"
+                            : "gray"
+                        }
+                      />
+                    }
+                  />
                 </span>
               )}
-              <span
-                title="Add to Wishlist"
-                onClick={(e) => handleClickOptions(e, "WISHLIST")}
-              >
-                <SelectOption
-                  icon={
-                    <BsFillSuitHeartFill
-                      color={
-                        current?.wishlist?.some((i) => i._id === pid)
-                          ? "red"
-                          : "gray"
-                      }
-                    />
-                  }
-                />
-              </span>
             </div>
           )}
           <img
@@ -176,7 +176,7 @@ const Product = ({
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default withBaseComponent(memo(Product))

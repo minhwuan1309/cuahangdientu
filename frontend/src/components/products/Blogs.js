@@ -15,7 +15,7 @@ const Blogs = () => {
   return (
     <>
       <h3 className="text-[20px] font-semibold py-[15px] border-b-2 border-main">
-        BLOG POSTS
+        BLOG
       </h3>
       <div className="lg:grid w-screen lg:w-full pr-6 lg:grid-cols-4 gap-4">
         {blogs?.map((el) => (

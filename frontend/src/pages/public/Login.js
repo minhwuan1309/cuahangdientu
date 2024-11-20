@@ -8,12 +8,12 @@ import {
 } from "apis/user"
 import Swal from "sweetalert2"
 import { useNavigate, Link, useSearchParams } from "react-router-dom"
-import path from "ultils/path"
+import path from "utils/path"
 import { login } from "store/user/userSlice"
 import { showModal } from "store/app/appSlice"
 import { useDispatch } from "react-redux"
 import { toast } from "react-toastify"
-import { validate } from "ultils/helpers"
+import { validate } from "utils/helpers"
 
 const Login = () => {
   const navigate = useNavigate()

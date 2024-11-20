@@ -30,7 +30,7 @@ import {
   Wishlist,
   Checkout,
 } from "pages/user"
-import path from "ultils/path"
+import path from "utils/path"
 import { getCategories } from "store/app/asyncActions"
 import { useDispatch, useSelector } from "react-redux"
 import { ToastContainer } from "react-toastify"
