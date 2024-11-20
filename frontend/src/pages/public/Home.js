@@ -10,7 +10,7 @@ import {
   Product,
 } from "../../components"
 import { useSelector } from "react-redux"
-import icons from "../../ultils/icons"
+import icons from "../../utils/icons"
 import withBaseComponent from "hocs/withBaseComponent"
 import { createSearchParams } from "react-router-dom"
 

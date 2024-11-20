@@ -31,12 +31,12 @@ const AdminSidebar = () => {
     if (role === 1945) {
 
       return adminSidebar.filter((item) =>
-        ["Dashboard", "Manage users"].includes(item.text)
+        ["Dashboard", "Quản lý account"].includes(item.text)
       );
     } else if (role === 1980) {
 
       return adminSidebar.filter((item) =>
-        ["Products", "Manage orders", "Blogs"].includes(item.text)
+        ["Sản phẩm", "Quản lý orders", "Blogs"].includes(item.text)
       );
     }
     return [];

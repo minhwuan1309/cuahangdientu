@@ -3,7 +3,7 @@ import BoxInfo from "components/chart/BoxInfo"
 import CustomChart from "components/chart/CustomChart"
 import React, { useEffect, useState } from "react"
 import { AiOutlineUserAdd } from "react-icons/ai"
-import { formatMoney } from "ultils/helpers"
+import { formatMoney } from "utils/helpers"
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js"
 import { Pie } from "react-chartjs-2"
 ChartJS.register(ArcElement, Tooltip, Legend)

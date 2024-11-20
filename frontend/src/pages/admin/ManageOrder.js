@@ -19,7 +19,7 @@ import {
 } from "react-router-dom";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
-import { formatMoney } from "ultils/helpers";
+import { formatMoney } from "utils/helpers";
 
 const ManageOrder = () => {
   const navigate = useNavigate();

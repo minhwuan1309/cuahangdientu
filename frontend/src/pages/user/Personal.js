@@ -7,7 +7,7 @@ import avatar from 'assets/avatarDefault.png'
 import { apiUpdateCurrent } from 'apis'
 import { getCurrent } from 'store/user/asyncActions'
 import { toast } from 'react-toastify'
-import { getBase64 } from 'ultils/helpers'
+import { getBase64 } from 'utils/helpers'
 import { useSearchParams } from 'react-router-dom'
 import withBaseComponent from 'hocs/withBaseComponent'
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import payment from "assets/payment.svg"
 import { useSelector } from "react-redux"
-import { formatMoney } from "ultils/helpers"
+import { formatMoney } from "utils/helpers"
 import { Congrat, InputForm, Paypal } from "components"
 import withBaseComponent from "hocs/withBaseComponent"
 import { getCurrent } from "store/user/asyncActions"

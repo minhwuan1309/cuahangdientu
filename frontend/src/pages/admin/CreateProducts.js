@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect } from "react";
 import { InputForm, Select, Button, MarkdownEditor, Loading } from "components";
 import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
-import { validate, getBase64 } from "ultils/helpers";
+import { validate, getBase64 } from "utils/helpers";
 import { toast } from "react-toastify";
 import { apiCreateProduct } from "apis";
 import { showModal } from "store/app/appSlice";

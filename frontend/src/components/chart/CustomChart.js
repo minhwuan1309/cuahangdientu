@@ -6,7 +6,7 @@ import {
   getDaysInRange,
   getMonthInYear,
   getMonthsInRange,
-} from "ultils/helpers"
+} from "utils/helpers"
 
 const CustomChart = ({ data, isMonth, customTime }) => {
   const [chartData, setChartData] = useState([])

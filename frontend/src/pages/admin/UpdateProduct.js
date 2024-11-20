@@ -1,7 +1,7 @@
 import { InputForm, MarkdownEditor, Select, Button, Loading } from 'components'
 import React, { memo, useState, useEffect, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
-import { validate, getBase64 } from 'ultils/helpers'
+import { validate, getBase64 } from 'utils/helpers'
 import { toast } from 'react-toastify'
 import { apiUpdateProduct } from 'apis'
 import { showModal } from 'store/app/appSlice'

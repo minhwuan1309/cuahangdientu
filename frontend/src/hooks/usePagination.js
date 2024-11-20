@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { generateRange } from '../ultils/helpers'
+import { generateRange } from '../utils/helpers'
 import { BiDotsHorizontalRounded } from 'react-icons/bi'
 
 
