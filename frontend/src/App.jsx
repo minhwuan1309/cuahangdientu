@@ -37,6 +37,7 @@ import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { Cart, Modal } from "components"
 import { showCart } from "store/app/appSlice"
+import BlogsPage from "pages/public/Blogs"
 
 function App() {
   const dispatch = useDispatch()
@@ -62,6 +63,7 @@ function App() {
         <Route path={path.PUBLIC} element={<Public />}>
           <Route path={path.HOME} element={<Home />} />
           <Route path={path.BLOGS__ID__TITLE} element={<DetailBlogs />} />
+          <Route path={path.BLOGS} element={<BlogsPage/>}/>
           <Route
             path={path.DETAIL_PRODUCT__CATEGORY__PID__TITLE}
             element={<DetailProduct />}

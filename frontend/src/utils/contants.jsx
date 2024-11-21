@@ -18,7 +18,7 @@ export const navigation = [
     path: `/${path.BLOGS}`,
   },
   {
-    id: 5,
+    id: 4,
     value: "FAQs",
     path: `/${path.FAQ}`,
   },
@@ -213,7 +213,7 @@ export const adminSidebar = [
   {
     id: 4,
     type: "SINGLE",
-    text: "Quản lý orders",
+    text: "Quản lý đơn hàng",
     path: `/${path.ADMIN}/${path.MANAGE_ORDER}`,
     icon: <RiBillLine size={20} />,
   },

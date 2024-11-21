@@ -63,6 +63,7 @@ const Home = ({ navigate }) => {
         <div className="w-screen lg:hidden pr-4">
           {categories
             ?.filter((el) => el.brand.length > 0)
+            ?.slice(0, 6) 
             ?.map((el) => (
               <div key={el._id} className="col-span-1">
                 <div className="border w-full flex p-4 gap-4 min-h-[190px]">
@@ -100,6 +101,7 @@ const Home = ({ navigate }) => {
         <div className="lg:grid hidden lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 mt-4">
           {categories
             ?.filter((el) => el.brand.length > 0)
+            ?.slice(0, 6) 
             ?.map((el) => (
               <div key={el._id} className="col-span-1">
                 <div className="border w-full flex p-4 gap-4 min-h-[190px]">
@@ -139,7 +141,7 @@ const Home = ({ navigate }) => {
         <Blogs />
       </div>
     </div>
-  )
+  );
 }
 
 export default withBaseComponent(Home)

@@ -32,7 +32,7 @@ const CreateBlog = () => {
     <div className="w-full flex flex-col gap-4 bg-gray-50 relative">
       <div className="h-[69px] w-full"></div>
       <div className="p-4 border-b w-full bg-gray-50 justify-between flex items-center fixed top-0">
-        <h1 className="text-3xl font-bold tracking-tight">Create Blog</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Tạo bài Blog</h1>
       </div>
       <div className="px-4 flex flex-col gap-4">
         <InputForm

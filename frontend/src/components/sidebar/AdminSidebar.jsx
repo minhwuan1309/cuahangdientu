@@ -31,7 +31,13 @@ const AdminSidebar = () => {
     if (role === 1945) {
 
       return adminSidebar.filter((item) =>
-        ["Dashboard", "Quản lý account"].includes(item.text)
+        [
+          "Dashboard",
+          "Quản lý account",
+          "Sản phẩm",
+          "Quản lý đơn hàng",
+          "Blogs",
+        ].includes(item.text)
       );
     } else if (role === 1980) {
 

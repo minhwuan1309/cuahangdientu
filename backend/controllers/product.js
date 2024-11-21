@@ -99,8 +99,7 @@ const getProducts = asyncHandler(async (req, res) => {
   const limit = +req.query.limit || process.env.LIMIT_PRODUCTS
   const skip = (page - 1) * limit
   queryCommand.skip(skip).limit(limit)
-  // Execute query
-  // Số lượng sp thỏa mãn điều kiện !== số lượng sp trả về 1 lần gọi API
+
   queryCommand.exec(async (err, response) => {
     if (err) throw new Error(err.message)
     const counts = await Product.find(qr).countDocuments()

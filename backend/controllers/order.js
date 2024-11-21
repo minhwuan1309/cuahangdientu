@@ -30,7 +30,7 @@ const updateStatus = asyncHandler(async (req, res) => {
 const getUserOrders = asyncHandler(async (req, res) => {
   const queries = { ...req.query }
   const { _id } = req.user
-  // Tách các trường đặc biệt ra khỏi query
+
   const excludeFields = ["limit", "sort", "page", "fields"]
   excludeFields.forEach((el) => delete queries[el])
 

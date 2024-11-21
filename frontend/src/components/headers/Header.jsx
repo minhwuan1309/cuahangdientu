@@ -98,12 +98,6 @@ const Header = () => {
                       Workspace
                     </Link>
                   )}
-                  <span
-                    onClick={() => dispatch(logout())}
-                    className="p-2 w-full hover:bg-sky-100"
-                  >
-                    Logout
-                  </span>
                 </div>
               )}
             </div>

@@ -34,18 +34,19 @@ const Footer = () => {
               ABOUT US
             </h3>
             <span>
-              <span>Address: </span>
+              <span>Địa chỉ: </span>
               <span className="opacity-70">
-                474 Ontario St Toronto, ON M4X 1M7 Canada
+                Khu Công nghệ cao XL Hà Nội, Hiệp Phú, Quận 9, Hồ Chí Minh,
+                Vietnam
               </span>
             </span>
             <span>
-              <span>Phone: </span>
-              <span className="opacity-70">(+1234)56789xxx</span>
+              <span>Điện thoại: </span>
+              <span className="opacity-70">(+84) 2854452222</span>
             </span>
             <span>
               <span>Mail: </span>
-              <span className="opacity-70">tadathemes@gmail.com</span>
+              <span className="opacity-70">hutech@edu.vn</span>
             </span>
           </div>
           <div className="flex-1 flex flex-col gap-2">
@@ -71,7 +72,7 @@ const Footer = () => {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default memo(Footer)
