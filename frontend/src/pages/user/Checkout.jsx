@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import payment from "assets/payment.svg";
 import { useSelector } from "react-redux";
-import { formatMoney } from "utils/helpers";
-import { Congrat, InputForm, Paypal } from "components";
+import { formatMoney, calculateTotal } from "utils/helpers";
+import { Congrat, Paypal } from "components";
 import withBaseComponent from "hocs/withBaseComponent";
 import { getCurrent } from "store/user/asyncActions";
 import Swal from "sweetalert2";
@@ -19,14 +19,14 @@ const Checkout = ({ dispatch, navigate }) => {
   }, [isSuccess]);
 
   useEffect(() => {
-    if (paymentMethod === "OFFLINE") {
+    if (paymentMethod === "COD") {
       const total = Math.round(
         +currentCart?.reduce((sum, el) => +el?.price * el.quantity + sum, 0)
       );
       Swal.fire({
         icon: "info",
         title: "Thanh toán",
-        text: `Trả bằng tiền mặt số tiền: ${formatMoney(
+        text: `Vui lòng trả bằng tiền mặt số tiền ${formatMoney(
           total
         )} VNĐ khi nhận hàng.`,
         showConfirmButton: true,
@@ -48,22 +48,16 @@ const Checkout = ({ dispatch, navigate }) => {
       products: currentCart,
       total: Math.round(
         +currentCart?.reduce((sum, el) => +el?.price * el.quantity + sum, 0) /
-          23500
+          25000
       ),
       address: current?.address,
+      paymentMethod
     };
-    const response = await apiCreateOrder({
-      ...payload,
-      status: "Đang được giao",
-    });
+    const response = await apiCreateOrder({ ...payload, status: "Pending" });
     if (response.success) {
       setIsSuccess(true);
       setTimeout(() => {
-        Swal.fire(
-          "Đã đặt đơn hàng thành công!",
-          "Đơn hàng đã được khởi tạo.",
-          "success"
-        ).then(() => {
+        Swal.fire("Congrat!", "Order was created.", "success").then(() => {
           navigate("/");
         });
       }, 1500);
@@ -110,7 +104,6 @@ const Checkout = ({ dispatch, navigate }) => {
             </table>
           </div>
 
-          {/* Tổng tiền và địa chỉ */}
           <div className="bg-white shadow-md rounded p-4">
             <div className="flex justify-between text-lg mb-2">
               <span className="font-medium">Tổng tiền:</span>
@@ -137,11 +130,11 @@ const Checkout = ({ dispatch, navigate }) => {
               className="w-full border rounded-md px-4 py-2"
             >
               <option value="">-- Chọn --</option>
-              <option value="OFFLINE">Thanh toán khi nhận hàng</option>
-              <option value="ONLINE">Thanh toán Paypal</option>
-              <option value="QR">Thanh toán Momo</option>
+              <option value="COD">Thanh toán khi nhận hàng</option>
+              <option value="PAYPAL">Thanh toán Paypal</option>
+              <option value="MOMO">Thanh toán Momo</option>
             </select>
-            {paymentMethod === "ONLINE" && (
+            {paymentMethod === "PAYPAL" && (
               <div className="mt-4">
                 <Paypal
                   payload={{
@@ -150,7 +143,7 @@ const Checkout = ({ dispatch, navigate }) => {
                       +currentCart?.reduce(
                         (sum, el) => +el?.price * el.quantity + sum,
                         0
-                      ) / 25400
+                      ) / 25000
                     ),
                     address: current?.address,
                   }}
@@ -159,7 +152,7 @@ const Checkout = ({ dispatch, navigate }) => {
                     +currentCart?.reduce(
                       (sum, el) => +el?.price * el.quantity + sum,
                       0
-                    ) / 25400
+                    ) / 25000
                   )}
                 />
               </div>

@@ -24,7 +24,7 @@ const DetailCart = ({ location, navigate }) => {
                 search: createSearchParams({ redirect: location.pathname }).toString()
             })
         })
-        else window.open(`/${path.CHECKOUT}`, '_blank')
+        else navigate(`/${path.CHECKOUT}`)
     }
     return (
         <div className='w-full'>

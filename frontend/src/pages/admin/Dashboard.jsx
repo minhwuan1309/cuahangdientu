@@ -62,7 +62,7 @@ const Dashboard = () => {
             icon={<img src="/dong.svg" className="h-6 object-contain" />}
             number={
               data?.totalSuccess?.length > 0
-                ? formatMoney(Math.round(data?.totalSuccess[0]?.count * 23500))
+                ? formatMoney(Math.round(data?.totalSuccess[0]?.count * 25000))
                 : 0
             }
             className="border-green-500 text-white bg-green-500"
@@ -72,7 +72,7 @@ const Dashboard = () => {
             icon={<img src="/dong.svg" className="h-6 object-contain" />}
             number={
               data?.totalFailed?.length > 0
-                ? formatMoney(Math.round(data?.totalFailed[0]?.count * 23500))
+                ? formatMoney(Math.round(data?.totalFailed[0]?.count * 25000))
                 : 0
             }
             className="border-orange-500 text-white bg-orange-500"
@@ -162,9 +162,9 @@ const Dashboard = () => {
               />
             )}
           </div>
-          <div className="col-span-3 rounded-md border p-4">
+          <div className="col-span-3 rounded-md border p-4 text-center">
             <span className="font-bold gap-8">
-              Số người truy cập chưa đăng ký và đã đăng ký
+              Thống kê tổng đơn đã huỷ và đơn thành công
             </span>
             <div>
               <Pie data={pieData} />;

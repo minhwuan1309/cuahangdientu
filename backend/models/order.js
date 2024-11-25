@@ -23,11 +23,16 @@ var orderSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "User",
     },
+    paymentMethod: {
+      type: String,
+      enum: ["COD", "PAYPAL", "MOMO"],
+      required: true, 
+    },
   },
   {
     timestamps: true,
   }
-)
+);
 
 //Export the model
 module.exports = mongoose.model("Order", orderSchema)
