@@ -111,19 +111,37 @@ const getProducts = asyncHandler(async (req, res) => {
   })
 })
 const updateProduct = asyncHandler(async (req, res) => {
-  const { pid } = req.params
-  const files = req?.files
-  if (files?.thumb) req.body.thumb = files?.thumb[0]?.path
-  if (files?.images) req.body.images = files?.images?.map((el) => el.path)
-  if (req.body && req.body.title) req.body.slug = slugify(req.body.title)
+  const { pid } = req.params;
+  const files = req?.files;
+
+  // Validate and assign thumbnail if it exists
+  if (files?.thumb && files?.thumb[0]?.path) {
+    req.body.thumb = files.thumb[0].path;
+  }
+
+  // Validate and filter valid images
+  if (files?.images) {
+    req.body.images = files.images
+      .filter((image) => image && image.path) // Filter valid images
+      .map((el) => el.path);
+  }
+
+  // Generate slug from title if available
+  if (req.body && req.body.title) {
+    req.body.slug = slugify(req.body.title);
+  }
+
+  // Update the product
   const updatedProduct = await Product.findByIdAndUpdate(pid, req.body, {
     new: true,
-  })
+  });
+
   return res.status(200).json({
-    success: updatedProduct ? true : false,
+    success: !!updatedProduct,
     mes: updatedProduct ? "Updated." : "Cannot update product",
-  })
-})
+  });
+});
+
 const deleteProduct = asyncHandler(async (req, res) => {
   const { pid } = req.params
   const deletedProduct = await Product.findByIdAndDelete(pid)

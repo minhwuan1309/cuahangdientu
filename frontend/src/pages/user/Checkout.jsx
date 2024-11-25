@@ -146,6 +146,7 @@ const Checkout = ({ dispatch, navigate }) => {
                       ) / 25000
                     ),
                     address: current?.address,
+                    paymentMethod
                   }}
                   setIsSuccess={setIsSuccess}
                   amount={Math.round(

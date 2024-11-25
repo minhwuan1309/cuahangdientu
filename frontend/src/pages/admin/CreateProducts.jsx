@@ -10,13 +10,7 @@ import { showModal } from "store/app/appSlice";
 const CreateProducts = () => {
   const { categories } = useSelector((state) => state.app);
   const dispatch = useDispatch();
-  const {
-    register,
-    formState: { errors },
-    reset,
-    handleSubmit,
-    watch,
-  } = useForm();
+  const { register, formState: { errors }, reset, handleSubmit, watch } = useForm()
 
   const [payload, setPayload] = useState({
     description: "",
@@ -32,7 +26,7 @@ const CreateProducts = () => {
     },
     [payload]
   );
-  const [hoverElm, setHoverElm] = useState(null);
+
   const handlePreviewThumb = async (file) => {
     const base64Thumb = await getBase64(file);
     setPreview((prev) => ({ ...prev, thumb: base64Thumb }));
@@ -49,6 +43,7 @@ const CreateProducts = () => {
     }
     setPreview((prev) => ({ ...prev, images: imagesPreview }));
   };
+  
   useEffect(() => {
     handlePreviewThumb(watch("thumb")[0]);
   }, [watch("thumb")]);
