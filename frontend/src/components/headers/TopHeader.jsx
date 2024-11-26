@@ -39,6 +39,7 @@ const TopHeaders = () => {
             <span
               onClick={() => dispatch(logout())}
               className="hover:rounded-full hover:bg-gray-200 cursor-pointer hover:text-main p-2"
+              aria-label="logout"
             >
               <AiOutlineLogout size={20} />
             </span>

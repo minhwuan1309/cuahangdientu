@@ -311,14 +311,21 @@ const sendOrderConfirmationEmail = async (userEmail, orderDetails) => {
         ${orderDetails.products
           .map(
             (product) =>
-              `<li>${product.title} - ${product.quantity} - Price ${formatMoney(
-                product.price
-              )} VND</li>`
+              `<li>${product.title}</li>`
+              `<li>
+                Quantity: ${product.quantity}
+               </li>`
+               `<li>
+                Price ${formatMoney(product.price)} VNĐ
+               </li>`
           )
           .join("")}
       </ul>
-      <p><strong>Total:</strong> ${formatMoney(orderDetails.total*25000)} VND</p>
+      <p><strong>Total:</strong> ${formatMoney(
+        orderDetails.total * 25000
+      )} VND</p>
       <p>Payment Method: ${orderDetails.paymentMethod}</p>
+      <p>Your order will be delivered to you in 2 days.</p>
     `,
   };
 

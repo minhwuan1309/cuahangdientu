@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "store/user/userSlice";
 import withBaseComponent from "hocs/withBaseComponent";
 import { showCart } from "store/app/appSlice";
+import { AiOutlineShoppingCart } from "react-icons/ai";
 
 const { RiPhoneFill, MdEmail, BsHandbagFill, FaUserCircle } = icons;
 
@@ -63,11 +64,14 @@ const Header = () => {
                   <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-600 flex items-center justify-center text-[10px] text-white rounded-full">
                     {current?.cart?.length || 0}
                   </span>
-                  <BsHandbagFill size={20} color="red" />
+                  <BsHandbagFill size={22} color="red" />
                 </span>
-                <span className="hidden md:inline-block">{`${
-                  current?.cart?.length || 0
-                } item(s)`}</span>
+                <span className="flex cursor-pointer items-center justify-center px-2 gap-2 relative">
+                  <AiOutlineShoppingCart size={20} color="red" />
+                  <span className="hidden md:inline-block">{`${
+                    current?.cart?.length || 0
+                  } item(s)`}</span>
+                </span>
               </div>
             )}
             <div
@@ -75,7 +79,7 @@ const Header = () => {
               onClick={() => setIsShowOption((prev) => !prev)}
               id="profile"
             >
-              <FaUserCircle size={20} color="red" />
+              <FaUserCircle size={22} color="red" />
               <span className="hidden md:inline-block">Profile</span>
               {isShowOption && (
                 <div
