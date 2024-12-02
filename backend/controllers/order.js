@@ -6,6 +6,7 @@ const nodemailer = require("nodemailer");
 const asyncHandler = require("express-async-handler");
 const user = require("../models/user");
 const order = require("../models/order");
+const coupon = require("../models/coupon");
 
 const createOrder = asyncHandler(async (req, res) => {
   const { _id } = req.user;
@@ -16,6 +17,7 @@ const createOrder = asyncHandler(async (req, res) => {
   if (address) {
     await User.findByIdAndUpdate(_id, { address, cart: [] });
   }
+  if(coupon) total = Math.round(total *(1 - coupon/100)/1000)*1000
   const data = { products, total, orderBy: _id, paymentMethod };
   if (status) data.status = status;
   const newOrder = await Order.create(data);

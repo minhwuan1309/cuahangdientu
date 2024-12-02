@@ -38,6 +38,8 @@ import "react-toastify/dist/ReactToastify.css"
 import { Cart, Modal } from "components"
 import { showCart } from "store/app/appSlice"
 import BlogsPage from "pages/public/Blogs"
+import CreateCategory from "pages/admin/CreateCategory"
+import ManageCategories from "pages/admin/ManageCategories"
 
 function App() {
   const dispatch = useDispatch()
@@ -63,7 +65,7 @@ function App() {
         <Route path={path.PUBLIC} element={<Public />}>
           <Route path={path.HOME} element={<Home />} />
           <Route path={path.BLOGS__ID__TITLE} element={<DetailBlogs />} />
-          <Route path={path.BLOGS} element={<BlogsPage/>}/>
+          <Route path={path.BLOGS} element={<BlogsPage />} />
           <Route
             path={path.DETAIL_PRODUCT__CATEGORY__PID__TITLE}
             element={<DetailProduct />}
@@ -82,6 +84,9 @@ function App() {
           <Route path={path.CREATE_PRODUCTS} element={<CreateProducts />} />
           <Route path={path.CREATE_BLOG} element={<CreateBlog />} />
           <Route path={path.MANAGE_BLOGS} element={<ManageBlog />} />
+          <Route path={path.CREATE_CATEGORY} element={<CreateCategory />} />
+          <Route path={path.MANAGE_CATEGORIES} element={<ManageCategories />} />
+          
         </Route>
         <Route path={path.MEMBER} element={<MemberLayout />}>
           <Route path={path.PERSONAL} element={<Personal />} />
@@ -106,7 +111,7 @@ function App() {
       {/* Same as */}
       <ToastContainer />
     </div>
-  )
+  );
 }
 
 export default App

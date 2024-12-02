@@ -218,6 +218,22 @@ export const adminSidebar = [
     icon: <RiBillLine size={20} />,
   },
   {
+    id: 5,
+    type: "PARENT",
+    text: "Loại sản phẩm",
+    icon: <TbBrandProducthunt size={20} />,
+    submenu: [
+      {
+        text: "Thêm loại sản phẩm",
+        path: `/${path.ADMIN}/${path.CREATE_CATEGORY}`,
+      },
+      {
+        text: "Quản lý loại sản phẩm",
+        path: `/${path.ADMIN}/${path.MANAGE_CATEGORIES}`,
+      },
+    ],
+  },
+  {
     id: 31,
     type: "PARENT",
     text: "Blogs",
@@ -233,7 +249,7 @@ export const adminSidebar = [
       },
     ],
   },
-]
+];
 export const memberSidebar = [
   {
     id: 1,

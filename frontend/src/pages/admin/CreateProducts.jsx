@@ -134,12 +134,16 @@ const CreateProducts = () => {
             />
           </div>
           <div className="w-full my-6 flex gap-4">
+            {/* Category Select */}
             <Select
               label="Category"
-              options={categories?.map((el) => ({
-                code: el._id,
-                value: el.title,
-              }))}
+              options={categories
+                ?.slice() // Tạo một bản sao của mảng
+                ?.sort((a, b) => a.title.localeCompare(b.title)) // Sort categories alphabetically
+                ?.map((el) => ({
+                  code: el._id,
+                  value: el.title,
+                }))}
               register={register}
               id="category"
               validate={{ required: "Need fill this field" }}
@@ -147,9 +151,15 @@ const CreateProducts = () => {
               errors={errors}
               fullWidth
             />
+
+            {/* Brand Select */}
             <Select
               label="Brand (Optional)"
-              options={categories?.find((el) => el._id === watch("category"))?.brand?.map((el) => ({ code: el, value: el }))}
+              options={categories
+                ?.find((el) => el._id === watch("category"))
+                ?.brand?.slice() // Tạo một bản sao của mảng
+                ?.sort((a, b) => a.localeCompare(b)) // Sort brands alphabetically
+                ?.map((el) => ({ code: el, value: el }))}
               register={register}
               id="brand"
               style="flex-auto"
@@ -157,6 +167,7 @@ const CreateProducts = () => {
               fullWidth
             />
           </div>
+                
           <MarkdownEditor
             name="description"
             changeValue={changeValue}

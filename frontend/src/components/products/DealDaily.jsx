@@ -16,6 +16,7 @@ const DealDaily = ({ dispatch }) => {
   const [second, setSecond] = useState(0)
   const [expireTime, setExpireTime] = useState(false)
   const { dealDaily } = useSelector((s) => s.products)
+  const [price, setPrice] = useState(0);
 
   const fetchDealDaily = async () => {
     const response = await apiGetProducts({ sort: "-totalRatings", limit: 20 })
@@ -78,6 +79,12 @@ const DealDaily = ({ dispatch }) => {
       clearInterval(idInterval)
     }
   }, [second, minute, hour, expireTime])
+
+  const discountPrice = (price) => {
+    if(!price) return 0;
+    return price - (price * 5) /100;
+  }
+
   return (
     <div className="border hidden lg:block w-full flex-auto">
       <div className="flex items-center justify-between p-4 w-full">
@@ -108,7 +115,18 @@ const DealDaily = ({ dispatch }) => {
             )
           )}
         </span>
-        <span>{`${formatMoney(dealDaily?.data?.price)} VNĐ`}</span>
+        <div className="flex flex-col items-center">
+          {/* Giá gốc */}
+          <span className="line-through text-gray-400 text-[18px]">
+            {dealDaily?.data?.price &&
+              `${formatMoney(dealDaily?.data?.price)} VNĐ`}
+          </span>
+          {/* Giá sau khi giảm */}
+          <span className="font-semibold text-red-600 text-[19px]">
+            {dealDaily?.data?.price &&
+              `${formatMoney(discountPrice(dealDaily?.data?.price))} VNĐ`}
+          </span>
+        </div>
       </div>
       <div className="px-4 mt-8">
         <div className="flex justify-center gap-2 items-center mb-4">
@@ -125,7 +143,7 @@ const DealDaily = ({ dispatch }) => {
         </button>
       </div>
     </div>
-  )
+  );
 }
 
 export default withBaseComponent(memo(DealDaily))

@@ -24,6 +24,8 @@ const path = {
   CREATE_PRODUCTS: "create-products",
   CREATE_BLOG: "create-blog",
   MANAGE_BLOGS: "manage-blogs",
+  CREATE_CATEGORY: "create-category",
+  MANAGE_CATEGORIES: "manage-categories",
 
   // Member
   MEMBER: "member",
@@ -31,6 +33,6 @@ const path = {
   MY_CART: "my-cart",
   HISTORY: "buy-history",
   WISHLIST: "wishlist",
-}
+};
 
 export default path

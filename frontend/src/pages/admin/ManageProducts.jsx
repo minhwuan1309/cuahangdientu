@@ -31,6 +31,8 @@ const ManageProducts = () => {
   const [editProduct, setEditProduct] = useState(null)
   const [update, setUpdate] = useState(false)
   const [customizeVarriant, setCustomizeVarriant] = useState(null)
+  const [sortColumn, setSortColumn] = useState(null);
+  const [sortOrder, setSortOrder] = useState("asc");
 
   const render = useCallback(() => {
     setUpdate(!update)
@@ -80,6 +82,33 @@ const ManageProducts = () => {
     })
   }
 
+  const handleSort = (column) => {
+    const newOrder =
+      sortColumn === column && sortOrder === "asc" ? "desc" : "asc";
+    setSortColumn(column);
+    setSortOrder(newOrder);
+
+    const sortedData = [...products].sort((a, b) => {
+      const valueA =
+        typeof a[column] === "string" ? a[column].toLowerCase() : a[column];
+      const valueB =
+        typeof b[column] === "string" ? b[column].toLowerCase() : b[column];
+
+      if (newOrder === "asc") {
+        return valueA > valueB ? 1 : -1;
+      }
+      return valueA < valueB ? 1 : -1;
+    });
+
+    setProducts(sortedData); // Cập nhật danh sách sản phẩm
+  };
+  const renderSortIcon = (column) => {
+    if (sortColumn !== column) return null;
+    return sortOrder === "asc" ? "🔼" : "🔽";
+  };
+
+
+
   return (
     <div className="w-full flex flex-col gap-4 relative">
       {editProduct && (
@@ -121,15 +150,60 @@ const ManageProducts = () => {
             <tr className="bg-sky-800 text-white border-b border-gray-300">
               <th className="text-center py-3 px-2">STT</th>
               <th className="text-center py-3 px-2">Ảnh</th>
-              <th className="text-center py-3 px-2">Tên sản phẩm</th>
-              <th className="text-center py-3 px-2">Brand</th>
-              <th className="text-center py-3 px-2">Loại</th>
-              <th className="text-center py-3 px-2">Giá</th>
-              <th className="text-center py-3 px-2">Số lượng</th>
-              <th className="text-center py-3 px-2">Đã bán</th>
-              <th className="text-center py-3 px-2">Màu</th>
-              <th className="text-center py-3 px-2">Đánh giá</th>
-              <th className="text-center py-3 px-2">Thời gian tạo</th>
+              <th
+                className="text-center py-3 px-2 cursor-pointer"
+                onClick={() => handleSort("title")}
+              >
+                Tên sản phẩm {renderSortIcon("title")}
+              </th>
+              <th
+                className="text-center py-3 px-2 cursor-pointer"
+                onClick={() => handleSort("brand")}
+              >
+                Brand {renderSortIcon("brand")}
+              </th>
+              <th
+                className="text-center py-3 px-2 cursor-pointer"
+                onClick={() => handleSort("category")}
+              >
+                Loại {renderSortIcon("category")}
+              </th>
+              <th
+                className="text-center py-3 px-2 cursor-pointer"
+                onClick={() => handleSort("price")}
+              >
+                Giá {renderSortIcon("price")}
+              </th>
+              <th
+                className="text-center py-3 px-2 cursor-pointer"
+                onClick={() => handleSort("quantity")}
+              >
+                Số lượng {renderSortIcon("quantity")}
+              </th>
+              <th
+                className="text-center py-3 px-2 cursor-pointer"
+                onClick={() => handleSort("sold")}
+              >
+                Đã bán {renderSortIcon("sold")}
+              </th>
+              <th
+                className="text-center py-3 px-2 cursor-pointer"
+                onClick={() => handleSort("color")}
+              >
+                Màu {renderSortIcon("color")}
+              </th>
+              <th
+                className="text-center py-3 px-2 cursor-pointer"
+                onClick={() => handleSort("rating")}
+              >
+                Đánh giá {renderSortIcon("rating")}
+              </th>
+              <th
+                className="text-center py-3 px-2 cursor-pointer"
+                onClick={() => handleSort("createdAt")}
+              >
+                Thời gian tạo {renderSortIcon("createdAt")}
+              </th>
               <th className="text-center py-3 px-2">Thao tác</th>
             </tr>
           </thead>

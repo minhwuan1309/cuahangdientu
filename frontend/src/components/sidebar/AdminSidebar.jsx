@@ -36,6 +36,7 @@ const AdminSidebar = () => {
           "Quản lý account",
           "Sản phẩm",
           "Quản lý đơn hàng",
+          "Loại sản phẩm",
           "Blogs",
         ].includes(item.text)
       );
