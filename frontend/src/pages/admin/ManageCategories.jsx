@@ -78,6 +78,7 @@ const ManageCategory = () => {
           />
         </div>
       )}
+      
       <div className="h-[69px] w-full"></div>
       <div className="p-4 border-b w-full bg-gray-50 flex items-center fixed top-0">
         <h1 className="text-3xl font-bold tracking-tight">
@@ -91,7 +92,7 @@ const ManageCategory = () => {
               <th className="text-center py-3 px-2">STT</th>
               <th className="text-center py-3 px-2">Ảnh</th>
               <th className="text-center py-3 px-2">Tên danh mục</th>
-              <th className="text-center py-3 px-2">Brands</th>
+              <th className="text-center py-3 px-2">Thương hiệu</th>
               <th className="text-center py-3 px-2">Ngày tạo</th>
               <th className="text-center py-3 px-2">Thao tác</th>
             </tr>

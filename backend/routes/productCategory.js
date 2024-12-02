@@ -7,7 +7,7 @@ const uploader = require('../config/cloudinary.config')
 router.post('/', [verifyAccessToken, isAdmin], uploader.single('image') ,ctrls.createCategory)
 router.get('/', ctrls.getCategories)
 router.get("/:pcid", ctrls.getCategoryById);
-router.put('/:pcid', [verifyAccessToken, isAdmin], ctrls.updateCategory)
+router.put('/:pcid', [verifyAccessToken, isAdmin], uploader.single('image'), ctrls.updateCategory)
 router.delete('/:pcid', [verifyAccessToken, isAdmin], ctrls.deleteCategory)
 
 

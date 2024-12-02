@@ -11,10 +11,10 @@ const CreateCategory = () => {
     handleSubmit,
     setValue,
     reset,
-    watch
+    watch,
   } = useForm();
   const [isLoading, setIsLoading] = useState(false);
-  const [brands, setBrands] = useState([""]); // Manage dynamic brands
+  const [brands, setBrands] = useState([""]);
   const [preview, setPreview] = useState({ image: null });
 
   // Add a new brand input field
@@ -31,45 +31,47 @@ const CreateCategory = () => {
     setBrands(updatedBrands);
   };
 
-  // Preview thumbnail
-  const handlePreviewThumb = async (file) => {
+  const handlePreviewImage = async (file) => {
     if (!file) return;
-    const base64Thumb = await getBase64(file);
-    setPreview((prev) => ({ ...prev, image: base64Thumb }));
+    const base64Image = await getBase64(file);
+    setPreview({ image: base64Image });
   };
 
-  // Watch for thumb changes
   useEffect(() => {
-    const thumbFile = watch("image")?.[0];
-    if (thumbFile) {
-      handlePreviewThumb(thumbFile);
+    const imageFile = watch("image")?.[0];
+    if (imageFile) {
+      handlePreviewImage(imageFile);
     }
   }, [watch("image")]);
 
   // Handle form submission
-const handlePublish = async (data) => {
-  const formData = new FormData();
-  formData.append("title", data.title);
-  formData.append("brand", JSON.stringify(brands));
-  formData.append("image", data.image[0]); // Ensure image is appended correctly
+  const handlePublish = async (data) => {
+    const formData = new FormData();
+    formData.append("title", data.title);
+    brands
+      .filter((brand) => brand.trim() !== "")
+      .forEach((brand, index) => {
+        formData.append(`brand[${index}]`, brand);
+      });
+    formData.append("image", data.image[0]); // Ensure image is appended correctly
 
-  for (const [key, value] of formData.entries()) {
-    console.log(key, value); // Log the FormData content
-  }
-
-  try {
-    const response = await apiCreateCategory(formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    if (response.success) {
-      console.log("Category created:", response);
-    } else {
-      console.error("Failed to create category:", response);
+    try {
+      const response = await apiCreateCategory(formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      if (response.success) {
+        toast.success("Category created successfully!");
+        reset(); // Reset form inputs and thumbnails
+        setBrands([""]);
+      } else {
+        toast.error(response.message || "Failed to create category!");
+      }
+    } catch (error) {
+      setIsLoading(false);
+      toast.error("An error occurred while creating the category.");
+      console.error(error);
     }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
+  };
 
   return (
     <div className="w-full flex flex-col gap-6 bg-gray-100 p-6 rounded-lg shadow-md">
@@ -137,8 +139,8 @@ const handlePublish = async (data) => {
           />
           {errors.image && (
             <small className="text-xs text-red-500">
-                {errors.image.message}
-              </small>
+              {errors.image.message}
+            </small>
           )}
         </div>
         {/* Preview Thumbnail */}
@@ -171,7 +173,6 @@ const handlePublish = async (data) => {
       </form>
     </div>
   );
-
 };
 
 export default CreateCategory;
