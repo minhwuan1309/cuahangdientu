@@ -169,7 +169,6 @@ const ManageOrder = () => {
                           </h3>
                           <p className="text-gray-600">{n.color}</p>
                           <p className="text-gray-600">{`${n.quantity} sản phẩm`}</p>
-                          <p>{n.price}</p>
                         </div>
                       </div>
                     ))}

@@ -28,7 +28,7 @@ const MemberSidebar = () => {
           alt="logo"
           className="w-16 h-16 object-cover"
         />
-        <small>{`${current?.lastname} ${current?.firstname}`}</small>
+        <small>{`${current?.firstname} ${current?.lastname} `}</small>
       </div>
       <div>
         {memberSidebar.map((el, idx) => (
@@ -90,7 +90,7 @@ const MemberSidebar = () => {
         </NavLink>
       </div>
     </div>
-  )
+  );
 }
 
 export default memo(MemberSidebar)

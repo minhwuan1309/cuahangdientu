@@ -1,7 +1,7 @@
-import React, { memo } from "react"
-import icons from "utils/icons"
+import React, { memo } from "react";
+import icons from "utils/icons";
 
-const { MdEmail } = icons
+const { MdEmail } = icons;
 const Footer = () => {
   return (
     <div className="w-full ">
@@ -9,17 +9,17 @@ const Footer = () => {
         <div className="w-main flex items-center flex-col lg:flex-row justify-center lg:justify-between">
           <div className="flex flex-col flex-1">
             <span className="text-[20px] text-gray-100">
-              SIGN UP TO NEWSLETTER
+              ĐĂNG KÝ NHẬN BẢN TIN
             </span>
             <small className="text-[13px] text-gray-300">
-              Subscribe now and receive weekly newsletter
+              Đăng ký ngay để nhận bản tin hàng tuần
             </small>
           </div>
           <div className="flex-1 flex items-center">
             <input
               className="p-4 pr-0 rounded-l-full w-full bg-[#F04646] outline-none text-gray-100 placeholder:text-sm placeholder:text-gray-200 placeholder:italic placeholder:opacity-50"
               type="text"
-              placeholder="Email address"
+              placeholder="Địa chỉ email"
             />
             <div className="h-[56px] w-[56px] bg-[#F04646] rounded-r-full flex items-center justify-center text-white">
               <MdEmail size={18} />
@@ -31,7 +31,7 @@ const Footer = () => {
         <div className="lg:w-main flex">
           <div className="flex-2 flex flex-col gap-2">
             <h3 className="mb-[20px] mt-8 text-[15px] font-medium border-l-2 border-main pl-[15px]">
-              ABOUT US
+              VỀ CHÚNG TÔI
             </h3>
             <span>
               <span>Địa chỉ: </span>
@@ -45,34 +45,32 @@ const Footer = () => {
               <span className="opacity-70">(+84) 2854452222</span>
             </span>
             <span>
-              <span>Mail: </span>
+              <span>Email: </span>
               <span className="opacity-70">hutech@edu.vn</span>
             </span>
           </div>
           <div className="flex-1 flex flex-col gap-2">
             <h3 className="mb-[20px] mt-8 text-[15px] font-medium border-l-2 border-main pl-[15px]">
-              INFORMATION
+              THÔNG TIN
             </h3>
-            <span>Typography</span>
-            <span>Gallery</span>
-            <span>Store Location</span>
-            <span>Today's Deals</span>
-            <span>Contacts</span>
+            <span>Hình ảnh</span>
+            <span>Địa điểm cửa hàng</span>
+            <span>Ưu đãi hôm nay</span>
+            <span>Liên hệ</span>
           </div>
           <div className="flex-1 flex flex-col gap-2">
             <h3 className="mb-[20px] mt-8 text-[15px] font-medium border-l-2 border-main pl-[15px]">
-              SUPPORTS
+              HỖ TRỢ
             </h3>
-            <span>Help</span>
-            <span>Free Shipping</span>
-            <span>FAQs</span>
-            <span>Return & Exchange</span>
-            <span>Testimonials</span>
+            <span>Vận chuyển miễn phí</span>
+            <span>Câu hỏi thường gặp</span>
+            <span>Đổi trả hàng</span>
+            <span>Lời chứng thực</span>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
-export default memo(Footer)
+export default memo(Footer);

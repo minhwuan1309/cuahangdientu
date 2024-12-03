@@ -9,10 +9,12 @@ import Swal from "sweetalert2";
 import { apiCreateOrder } from "apis";
 import { Link } from "react-router-dom";
 
+
 const Checkout = ({ dispatch, navigate }) => {
   const { currentCart, current } = useSelector((state) => state.user);
   const [isSuccess, setIsSuccess] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("");
+
 
   useEffect(() => {
     if (isSuccess) dispatch(getCurrent());

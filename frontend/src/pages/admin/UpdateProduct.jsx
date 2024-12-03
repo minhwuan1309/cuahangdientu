@@ -112,128 +112,160 @@ const UpdateProduct = ({ editProduct, render, setEditProduct }) => {
     };
 
     return (
-        <div className='w-full flex flex-col gap-4 relative'>
-            <div className='h-[69px] w-full'></div>
-            <div className='p-4 border-b bg-gray-100 flex justify-between items-center right-0 left-[327px] fixed top-0'>
-                <h1 className='text-3xl font-bold tracking-tight'>Update sản phẩm</h1>
-                <span className='text-main hover:underline cursor-pointer' onClick={() => setEditProduct(null)} >Cancel</span>
-            </div>
-            <div className='p-4'>
-                <form onSubmit={handleSubmit(handleUpdateProduct)}>
-                    <InputForm
-                        label='Name product'
-                        register={register}
-                        errors={errors}
-                        id='title'
-                        validate={{
-                            required: 'Need fill this field'
-                        }}
-                        fullWidth
-                        placeholder='Name of new product'
-                    />
-                    <div className='w-full my-6 flex gap-4'>
-                        <InputForm
-                            label='Price'
-                            register={register}
-                            errors={errors}
-                            id='price'
-                            validate={{
-                                required: 'Need fill this field'
-                            }}
-                            style='flex-auto'
-                            placeholder='Price of new product'
-                            type='number'
-                        />
-                        <InputForm
-                            label='Quantity'
-                            register={register}
-                            errors={errors}
-                            id='quantity'
-                            validate={{
-                                required: 'Need fill this field'
-                            }}
-                            style='flex-auto'
-                            placeholder='Quantity of new product'
-                            type='number'
-                        />
-                        <InputForm
-                            label='Color'
-                            register={register}
-                            errors={errors}
-                            id='color'
-                            validate={{
-                                required: 'Need fill this field'
-                            }}
-                            style='flex-auto'
-                            placeholder='color of new product'
-                        />
-                    </div>
-                    <div className='w-full my-6 flex gap-4'>
-                        <Select
-                            label='Category'
-                            options={categories?.map(el => ({ code: el.title, value: el.title }))}
-                            register={register}
-                            id='category'
-                            validate={{ required: 'Need fill this field' }}
-                            style='flex-auto'
-                            errors={errors}
-                            fullWidth
-                        />
-                        <Select
-                            label='Brand (Optional)'
-                            options={categories?.find(el => el.title === watch('category'))?.brand?.map(el => ({ code: el.toLowerCase(), value: el }))}
-                            register={register}
-                            id='brand'
-                            style='flex-auto'
-                            errors={errors}
-                            fullWidth
-                        />
-                    </div>
-                    <MarkdownEditor
-                        name='description'
-                        changeValue={changeValue}
-                        label='Description'
-                        invalidFields={invalidFields}
-                        setInvalidFields={setInvalidFields}
-                        value={payload.description}
-                    />
-                    <div className='flex flex-col gap-2 mt-8'>
-                        <label className='font-semibold' htmlFor="thumb">Upload thumb</label>
-                        <input
-                            type="file"
-                            id="thumb"
-                            {...register('thumb')}
-                        />
-                        {errors['thumb'] && <small className='text-xs text-red-500'>{errors['thumb']?.message}</small>}
-                    </div>
-                    {preview.thumb && <div className='my-4'>
-                        <img src={preview.thumb} alt="thumbnail" className='w-[200px] object-contain' />
-                    </div>}
-                    <div className='flex flex-col gap-2 mt-8'>
-                        <label className='font-semibold' htmlFor="products">Upload images of product</label>
-                        <input
-                            type="file"
-                            id="products"
-                            multiple
-                            {...register('images')}
-                        />
-                        {errors['images'] && <small className='text-xs text-red-500'>{errors['images']?.message}</small>}
-                    </div>
-                    {preview.images.length > 0 && <div className='my-4 flex w-full gap-3 flex-wrap'>
-                        {preview.images?.map((el, idx) => (
-                            <div
-                                key={idx}
-                                className='w-fit relative'
-                            >
-                                <img src={el} alt="product" className='w-[200px] object-contain' />
-                            </div>
-                        ))}
-                    </div>}
-                    <div className='my-6'><Button type='submit'>Update new product</Button></div>
-                </form>
-            </div>
+      <div className="w-full flex flex-col gap-4 relative">
+        <div className="h-[69px] w-full"></div>
+        <div className="p-4 border-b bg-gray-100 flex justify-between items-center right-0 left-[327px] fixed top-0">
+          <h1 className="text-3xl font-bold tracking-tight">
+            Cập nhật sản phẩm
+          </h1>
+          <span
+            className="text-main hover:underline cursor-pointer"
+            onClick={() => setEditProduct(null)}
+          >
+            Cancel
+          </span>
         </div>
-    )
+        <div className="p-4">
+          <form onSubmit={handleSubmit(handleUpdateProduct)}>
+            <InputForm
+              label="Name product"
+              register={register}
+              errors={errors}
+              id="title"
+              validate={{
+                required: "Need fill this field",
+              }}
+              fullWidth
+              placeholder="Name of new product"
+            />
+            <div className="w-full my-6 flex gap-4">
+              <InputForm
+                label="Price"
+                register={register}
+                errors={errors}
+                id="price"
+                validate={{
+                  required: "Need fill this field",
+                }}
+                style="flex-auto"
+                placeholder="Price of new product"
+                type="number"
+              />
+              <InputForm
+                label="Quantity"
+                register={register}
+                errors={errors}
+                id="quantity"
+                validate={{
+                  required: "Need fill this field",
+                }}
+                style="flex-auto"
+                placeholder="Quantity of new product"
+                type="number"
+              />
+              <InputForm
+                label="Color"
+                register={register}
+                errors={errors}
+                id="color"
+                validate={{
+                  required: "Need fill this field",
+                }}
+                style="flex-auto"
+                placeholder="color of new product"
+              />
+            </div>
+            <div className="w-full my-6 flex gap-4">
+              <Select
+                label="Category"
+                options={categories
+                  ?.slice() // Tạo một bản sao của mảng
+                  ?.sort((a, b) => a.title.localeCompare(b.title)) // Sort categories alphabetically
+                  ?.map((el) => ({ code: el.title, value: el.title }))}
+                register={register}
+                id="category"
+                validate={{ required: "Need fill this field" }}
+                style="flex-auto"
+                errors={errors}
+                fullWidth
+              />
+              <Select
+                label="Brand (Optional)"
+                options={categories
+                  ?.find((el) => el.title === watch("category"))
+                  ?.brand?.slice()?.sort((a, b) => a.localeCompare(b)) // Sort brands alphabetically
+                  .map((el) => ({ code: el.toLowerCase(), value: el }))}
+                register={register}
+                id="brand"
+                style="flex-auto"
+                errors={errors}
+                fullWidth
+              />
+            </div>
+            <MarkdownEditor
+              name="description"
+              changeValue={changeValue}
+              label="Description"
+              invalidFields={invalidFields}
+              setInvalidFields={setInvalidFields}
+              value={payload.description}
+            />
+            <div className="flex flex-col gap-2 mt-8">
+              <label className="font-semibold" htmlFor="thumb">
+                Upload thumb
+              </label>
+              <input type="file" id="thumb" {...register("thumb")} />
+              {errors["thumb"] && (
+                <small className="text-xs text-red-500">
+                  {errors["thumb"]?.message}
+                </small>
+              )}
+            </div>
+            {preview.thumb && (
+              <div className="my-4">
+                <img
+                  src={preview.thumb}
+                  alt="thumbnail"
+                  className="w-[200px] object-contain"
+                />
+              </div>
+            )}
+            <div className="flex flex-col gap-2 mt-8">
+              <label className="font-semibold" htmlFor="products">
+                Upload images of product
+              </label>
+              <input
+                type="file"
+                id="products"
+                multiple
+                {...register("images")}
+              />
+              {errors["images"] && (
+                <small className="text-xs text-red-500">
+                  {errors["images"]?.message}
+                </small>
+              )}
+            </div>
+            {preview.images.length > 0 && (
+              <div className="my-4 flex w-full gap-3 flex-wrap">
+                {preview.images?.map((el, idx) => (
+                  <div key={idx} className="w-fit relative">
+                    <img
+                      src={el}
+                      alt="product"
+                      className="w-[200px] object-contain"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+            <div className="my-6">
+              <Button type="submit">Update new product</Button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
 }
 
 export default memo(UpdateProduct)

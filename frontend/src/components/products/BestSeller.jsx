@@ -6,8 +6,8 @@ import { useDispatch, useSelector } from "react-redux"
 import clsx from "clsx"
 
 const tabs = [
-  { id: 1, name: "best sellers" },
-  { id: 2, name: "new arrivals" },
+  { id: 1, name: "Bán chạy" },
+  { id: 2, name: "Sản phẩm mới" },
 ]
 
 const BestSeller = () => {
@@ -35,7 +35,7 @@ const BestSeller = () => {
   }, [activedTab])
   return (
     <div className={clsx(isShowModal ? "hidden" : "")}>
-      <div className="flex text-[20px] ml-[-32px]">
+      <div className="flex px-4 text-[20px] ml-[-32px]">
         {tabs.map((el) => (
           <span
             key={el.id}

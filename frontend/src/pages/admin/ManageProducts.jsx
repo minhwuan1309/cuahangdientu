@@ -228,7 +228,19 @@ const ManageProducts = () => {
                     />
                   </td>
                   <td className="text-center py-3 px-2">{el.title}</td>
-                  <td className="text-center py-3 px-2">{el.brand}</td>
+                  <td className="text-center py-3 px-2">
+                    {el.brand === "lg"
+                      ? el.brand.toUpperCase()
+                      : el.brand
+                          ?.split(" ")
+                          .map(
+                            (word) =>
+                              word.charAt(0).toUpperCase() +
+                              word.slice(1).toLowerCase()
+                          )
+                          .join(" ")}
+                  </td>
+
                   <td className="text-center py-3 px-2">{el.category}</td>
                   <td className="text-center py-3 px-2 text-green-500 font-semibold">
                     {`${formatMoney(fotmatPrice(el.price))} VNĐ`}
@@ -240,7 +252,7 @@ const ManageProducts = () => {
                   <td className="text-center py-3 px-2">
                     {moment(el.createdAt).format("DD/MM/YYYY")}
                   </td>
-                  <td className="text-center py-3 px-2 flex justify-center gap-4">
+                  <td className="text-center py-7 px-2 flex justify-center gap-4">
                     <span
                       onClick={() => setEditProduct(el)}
                       className="text-blue-500 hover:text-orange-500 cursor-pointer"

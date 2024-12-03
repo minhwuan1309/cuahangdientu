@@ -104,17 +104,17 @@ export const productInfoTabs = [
 ]
 
 export const colors = [
-  "black",
-  "brown",
-  "gray",
-  "white",
-  "pink",
-  "yellow",
-  "orange",
-  "purple",
-  "green",
-  "blue",
-]
+  "đen",
+  "nâu",
+  "xám",
+  "trắng",
+  "hồng",
+  "vàng",
+  "cam",
+  "tím",
+  "xanh lá",
+  "xanh",
+];
 
 export const sorts = [
   {

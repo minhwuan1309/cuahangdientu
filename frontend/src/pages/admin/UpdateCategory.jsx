@@ -1,54 +1,51 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { apiGetCategoryById, apiUpdateCategory } from "apis";
 import { Button, InputForm, Loading } from "components";
+import { apiUpdateCategory } from "apis";
+import { getBase64 } from "utils/helpers";
 
-const UpdateCategory = () => {
-  const { pcid } = useParams(); // Extract category ID from URL
-  const navigate = useNavigate();
+const UpdateCategory = ({ editCategory, render, setEditCategory }) => {
   const {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm();
-
   const [brands, setBrands] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [preview, setPreview] = useState({ image: null });
 
-  // Fetch category details
+  // Load dữ liệu danh mục khi component được render
   useEffect(() => {
-    if (!pcid) {
-      toast.error("Category ID is missing.");
-      return;
+    if (editCategory) {
+      setValue("title", editCategory.title); // Set title từ editCategory
+      setBrands(editCategory.brand || []); // Set brands từ editCategory
+    }
+  }, [editCategory, setValue]);
+
+  const handlePreviewImage = async (file) => {
+    if (!file) return;
+    const base64Image = await getBase64(file);
+    setPreview({ image: base64Image });
+  };
+
+  // Hiển thị hình ảnh hiện tại nếu không có ảnh mới
+  useEffect(() => {
+    if (editCategory?.image && !watch("image")?.[0]) {
+      setPreview({ image: editCategory.image });
     }
 
-    const fetchCategory = async () => {
-      try {
-        const response = await apiGetCategoryById(pcid);
-        if (response.success) {
-          const { title, brand, image } = response.productCategory;
-          setValue("title", title);
-          setValue("image", image);
-          setBrands(brand || []);
-        } else {
-          toast.error(response.message || "Failed to load category details.");
-        }
-      } catch (error) {
-        console.error("Error fetching category:", error);
-        toast.error("An error occurred while loading category details.");
-      }
-    };
+    const imageFile = watch("image")?.[0];
+    if (imageFile) {
+      handlePreviewImage(imageFile);
+    }
+  }, [watch("image"), editCategory]);
 
-    fetchCategory();
-  }, [pcid,setValue]);
+  // Submit form
 
-
-
-
-  // Brand input handlers
+  // Thêm và xóa brand input
   const addBrandField = () => setBrands([...brands, ""]);
   const removeBrandField = (index) =>
     setBrands(brands.filter((_, i) => i !== index));
@@ -58,58 +55,76 @@ const UpdateCategory = () => {
     setBrands(updatedBrands);
   };
 
-  // Submit form
+  
   const handleUpdateCategory = async (data) => {
     setIsLoading(true);
+
     try {
-      const response = await apiUpdateCategory(
-        { ...data, brand: brands },
-        pcid
-      );
+      const formData = new FormData();
+      formData.append("title", data.title);
+      brands
+        .filter((brand) => brand.trim() !== "")
+        .forEach((brand, index) => {
+          formData.append(`brand[${index}]`, brand);
+        });
+      formData.append("image", data.image?.[0]);
+
+      const response = await apiUpdateCategory(formData, editCategory._id, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
       if (response.success) {
-        toast.success("Category updated successfully!");
-        navigate("/manage-categories"); // Navigate back to category management
+        toast.success("Cập nhật danh mục thành công!");
+
+        // Gọi lại hàm làm mới danh sách từ ManageCategory
+        render(); // render được truyền từ ManageCategory
+        setEditCategory(null); // Đóng form
       } else {
-        toast.error("Failed to update category.");
+        toast.error(response.message || "Cập nhật danh mục thất bại.");
       }
     } catch (error) {
-      console.error(error);
-      toast.error("An error occurred while updating the category.");
+      console.error("Error:", error.response?.data || error.message);
+      toast.error(
+        error.response?.data?.message ||
+          "Đã xảy ra lỗi trong quá trình cập nhật."
+      );
     }
+
     setIsLoading(false);
   };
 
-  return (
-    <div className="w-full flex flex-col gap-4 bg-gray-50 relative">
-      <div className="h-[69px] w-full"></div>
-      <div className="p-4 border-b w-full bg-gray-50 justify-between flex items-center fixed top-0">
-        <h1 className="text-3xl font-bold tracking-tight">Update Category</h1>
-      </div>
 
+  return (
+    <div className="w-full flex flex-col gap-6 bg-gray-100 p-6 rounded-lg shadow-md relative">
+      <div className="flex justify-between items-center border-b pb-4">
+        <h1 className="text-3xl font-bold text-gray-700">Cập nhật danh mục</h1>
+        <span
+          className="text-main hover:underline cursor-pointer"
+          onClick={() => setEditCategory(null)}
+        >
+          Cancel
+        </span>
+      </div>
       {isLoading ? (
         <Loading />
       ) : (
         <form
           onSubmit={handleSubmit(handleUpdateCategory)}
-          className="px-4 flex flex-col gap-4"
+          className="flex flex-col gap-4"
         >
           {/* Category Name */}
-          <div className="grid grid-cols-1 gap-4 text-xl">
-            <InputForm
-              label="Category Name"
-              id="title"
-              register={register}
-              errors={errors}
-              validate={{
-                required: "Category name is required.",
-              }}
-              placeholder="Enter category name"
-            />
-          </div>
+          <InputForm
+            label="Tên danh mục"
+            id="title"
+            register={register}
+            errors={errors}
+            validate={{ required: "Tên danh mục không được bỏ trống." }}
+            placeholder="Nhập tên danh mục"
+          />
 
           {/* Brands */}
           <div className="space-y-2 py-4">
-            <label className="font-semibold text-xl">Brands</label>
+            <label className="font-semibold text-xl">Thương hiệu</label>
             {brands.map((brand, index) => (
               <div
                 key={index}
@@ -119,47 +134,57 @@ const UpdateCategory = () => {
                   type="text"
                   value={brand}
                   onChange={(e) => handleBrandChange(index, e.target.value)}
-                  placeholder={`Brand ${index + 1}`}
+                  placeholder={`Thương hiệu ${index + 1}`}
                   className="border p-2 w-full rounded-md"
                 />
                 <Button
                   handleOnClick={() => removeBrandField(index)}
                   className="text-red-500"
                 >
-                  Remove
+                  Xóa
                 </Button>
               </div>
             ))}
-            <Button handleOnClick={addBrandField}>Add Brand</Button>
+            <Button handleOnClick={addBrandField}>Thêm thương hiệu</Button>
           </div>
-
-          {/* Thumbnail */}
           <div>
-            <label className="font-semibold text-xl">Thumbnail:</label>
+            <label className="block text-xl font-medium text-gray-700 mb-2">
+              Hình ảnh
+            </label>
             <input
               type="file"
+              id="image"
               {...register("image")}
               className="border p-2 w-full rounded-md"
             />
             {errors.image && (
-              <span className="text-red-500 text-sm">
+              <small className="text-xs text-red-500">
                 {errors.image.message}
-              </span>
+              </small>
             )}
           </div>
 
+          {/* Preview Thumbnail */}
+          {preview.image && (
+            <div className="py-4">
+              <label className="block text-lg font-medium text-gray-700 mb-2">
+                Preview
+              </label>
+              <img
+                src={preview.image}
+                alt="Preview"
+                className="w-32 h-32 object-cover rounded-md shadow-md"
+              />
+            </div>
+          )}
+
           {/* Submit Button */}
-          <div className="mt-6 flex justify-end">
-            <Button
-              type="submit"
-              className={`bg-blue-500 text-white px-4 py-2 rounded-md ${
-                isLoading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-              disabled={isLoading}
-            >
-              {isLoading ? "Updating..." : "Update Category"}
-            </Button>
-          </div>
+          <Button
+            type="submit"
+            className="justify-end bg-blue-500 text-white px-4 py-2 rounded-md "
+          >
+            Cập nhật danh mục
+          </Button>
         </form>
       )}
     </div>

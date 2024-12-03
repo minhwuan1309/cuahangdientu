@@ -1,4 +1,4 @@
-const { formatMoney } = require ("../utils/helper");
+const { formatMoney } = require("../utils/helper");
 const Order = require("../models/order");
 const User = require("../models/user");
 const Coupon = require("../models/coupon");
@@ -7,35 +7,48 @@ const asyncHandler = require("express-async-handler");
 const user = require("../models/user");
 const order = require("../models/order");
 const coupon = require("../models/coupon");
+const Product = require("../models/product");
 
 const createOrder = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const { products, total, address, status, paymentMethod } = req.body;
-  const userId = req.user._id;
-  const user = await User.findById(userId);
-  if (!user) throw new Error("User not found");
-  if (address) {
-    await User.findByIdAndUpdate(_id, { address, cart: [] });
-  }
-  if(coupon) total = Math.round(total *(1 - coupon/100)/1000)*1000
-  const data = { products, total, orderBy: _id, paymentMethod };
-  if (status) data.status = status;
-  const newOrder = await Order.create(data);
-  if (newOrder) {
-    await sendOrderConfirmationEmail(user.email, newOrder);
-    res.status(201).json({
+  const user = await User.findById(_id);
+  if (!user) throw new Error("Không tìm thấy người dùng");
+  if (address) await User.findByIdAndUpdate(_id, { address, cart: [] })
+  
+  const orderData = { products, total, orderBy: _id, paymentMethod }
+  if (status) orderData.status = status;
+
+  const newOrder = await Order.create(orderData)
+  if (!newOrder) throw new Error("Tạo đơn hàng thất bại")
+
+  try {
+    for (const item of products) {
+      const updatedProduct = await Product.findByIdAndUpdate(
+        item.product,
+        { $inc: { quantity: -item.quantity } },
+        { new: true }
+      )
+
+      if (!updatedProduct) throw new Error(`Sản phẩm với ID ${item.product} không tồn tại.`)
+    }
+    await sendOrderConfirmationEmail(user.email, newOrder)
+    res.json({
       success: true,
-      newOrder: newOrder,
-      message: "Order created successfully",
+      message: "Đơn hàng đã được tạo thành công",
+      order: newOrder,
     });
-  } else {
-    throw new Error("Failed to create order");
+  } catch (error) {
+    console.error("Lỗi trong quá trình xử lý đơn hàng:", error.message)
+    await Order.findByIdAndDelete(newOrder._id)
+    throw new Error(`Quá trình xử lý đơn hàng thất bại: ${error.message}`)
   }
 });
+
 const updateStatus = asyncHandler(async (req, res) => {
   const { oid } = req.params;
   const { status } = req.body;
-  if (!status) throw new Error("Missing status");
+
   const response = await Order.findByIdAndUpdate(
     oid,
     { status },
@@ -43,9 +56,10 @@ const updateStatus = asyncHandler(async (req, res) => {
   );
   return res.json({
     success: response ? true : false,
-    mes: response ? "Updated." : "Something went wrong",
+    mes: response ? "Cập nhật thành công!" : "Đã xảy ra lỗi!",
   });
 });
+
 const getUserOrders = asyncHandler(async (req, res) => {
   const queries = { ...req.query };
   const { _id } = req.user;
@@ -89,7 +103,7 @@ const getUserOrders = asyncHandler(async (req, res) => {
     return res.status(200).json({
       success: response ? true : false,
       counts,
-      orders: response ? response : "Cannot get products",
+      orders: response ? response : "Không thể lấy danh sách sản phẩm",
     });
   });
 });
@@ -134,7 +148,7 @@ const getOrders = asyncHandler(async (req, res) => {
     return res.status(200).json({
       success: response ? true : false,
       counts,
-      orders: response ? response : "Cannot get products",
+      orders: response ? response : "Không thể lấy danh sách sản phẩm",
     });
   });
 });
@@ -143,7 +157,7 @@ const deleteOrderByAdmin = asyncHandler(async (req, res) => {
   const rs = await Order.findByIdAndDelete(id);
   return res.json({
     success: rs ? true : false,
-    mes: rs ? "Deleted" : "Something went wrong",
+    mes: rs ? "Đã xoá đơn hàng" : "Đã xảy ra lỗi",
   });
 });
 function getCountPreviousDay(count = 1, date = new Date()) {
@@ -305,29 +319,45 @@ const sendOrderConfirmationEmail = async (userEmail, orderDetails) => {
   const mailOptions = {
     from: process.env.EMAIL_NAME,
     to: userEmail,
-    subject: "Order Confirmation",
+    subject: "Xác nhận đơn hàng",
     html: `
-      <h1>Thank you for your order!</h1>
-      <p>Your order has been confirmed. Here are the details:</p>
-      <ul>
-        ${orderDetails.products
-          .map(
-            (product) =>
-              `<li>${product.title}</li>`
-              `<li>
-                Quantity: ${product.quantity}
-               </li>`
-               `<li>
-                Price ${formatMoney(product.price)} VNĐ
-               </li>`
-          )
-          .join("")}
-      </ul>
-      <p><strong>Total:</strong> ${formatMoney(
+      <h1>Cảm ơn bạn đã đặt hàng!</h1>
+      <p>Đơn hàng của bạn đã được xác nhận. Chi tiết đơn hàng như sau:</p>
+      <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>
+          <tr>
+            <th style="border: 1px solid #ddd; padding: 8px;">Sản phẩm</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Số lượng</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Giá</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${orderDetails.products
+            .map(
+              (product) => `
+                <tr>
+                  <td style="border: 1px solid #ddd; padding: 8px;">${
+                    product.title
+                  }</td>
+                  <td style="border: 1px solid #ddd; padding: 8px;">${
+                    product.quantity
+                  }</td>
+                  <td style="border: 1px solid #ddd; padding: 8px;">${formatMoney(
+                    product.price
+                  )} VNĐ</td>
+                </tr>
+              `
+            )
+            .join("")}
+        </tbody>
+      </table>
+      <p style="margin-top: 20px;"><strong>Tổng cộng:</strong> ${formatMoney(
         orderDetails.total * 25000
-      )} VND</p>
-      <p>Payment Method: ${orderDetails.paymentMethod}</p>
-      <p>Your order will be delivered to you in 2 days.</p>
+      )} VNĐ</p>
+      <p><strong>Phương thức thanh toán:</strong> ${
+        orderDetails.paymentMethod
+      }</p>
+      <p>Đơn hàng của bạn sẽ được giao trong vòng 2 ngày.</p>
     `,
   };
 

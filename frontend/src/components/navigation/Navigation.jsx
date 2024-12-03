@@ -86,8 +86,8 @@ const Navigation = () => {
         id="q"
         register={register}
         errors={errors}
-        placeholder="Search something..."
-        style="flex-none border-none outline-none"
+        placeholder="Nhập từ khoá ......."
+        style="flex-none outline-none"
       />
     </div>
   );

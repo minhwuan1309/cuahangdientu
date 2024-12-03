@@ -20,18 +20,18 @@ const Pagination = ({ totalCount }) => {
   return (
     <div className="flex w-full justify-between items-center">
       {!+params.get("page") ? (
-        <span className="text-sm hidden lg:inline-block italic">{`Show products ${Math.min(
+        <span className="text-sm hidden lg:inline-block italic">{`${Math.min(
           totalCount,
           1
         )} - ${Math.min(
           +process.env.REACT_APP_LIMIT,
           totalCount
-        )} of ${totalCount}`}</span>
+        )}/${totalCount}`}</span>
       ) : (
         ""
       )}
       {+params.get("page") ? (
-        <span className="text-sm hidden lg:inline-block italic">{`Show products ${range()} of ${totalCount}`}</span>
+        <span className="text-sm hidden lg:inline-block italic">{`${range()}/${totalCount}`}</span>
       ) : (
         ""
       )}

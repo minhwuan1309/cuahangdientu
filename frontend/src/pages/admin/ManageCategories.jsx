@@ -61,27 +61,39 @@ const ManageCategory = () => {
         const response = await apiDeleteCategory(id);
         if (response.success) {
           toast.success(response.mes);
-          fetchCategories(Object.fromEntries([...params])); 
+          fetchCategories(Object.fromEntries([...params]));
         } else toast.error(response.mes);
       }
     });
   };
+  // Hàm làm mới danh sách danh mục
+  const refreshCategories = async () => {
+    try {
+      const response = await apiGetCategories();
+      if (response.success) {
+        setCategories(response.prodCategories); // Cập nhật danh sách danh mục
+      } else {
+        toast.error("Không thể tải lại danh sách danh mục.");
+      }
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      toast.error("Đã xảy ra lỗi khi tải lại danh sách danh mục.");
+    }
+  };
 
   return (
-    <div className="w-full flex flex-col gap-4 min-h-screen bg-gray-50 relative">
+    <div className="w-full flex flex-col gap-6 bg-gray-100 p-6 rounded-lg shadow-md relative">
       {editCategory && (
         <div className="absolute inset-0 min-h-screen bg-gray-100 z-50">
           <UpdateCategory
             editCategory={editCategory}
-            render={render}
+            render={refreshCategories}
             setEditCategory={setEditCategory}
           />
         </div>
       )}
-      
-      <div className="h-[69px] w-full"></div>
-      <div className="p-4 border-b w-full bg-gray-50 flex items-center fixed top-0">
-        <h1 className="text-3xl font-bold tracking-tight">
+      <div className="flex justify-between items-center border-b pb-4">
+        <h1 className="text-3xl font-semibold text-gray-700">
           Quản lý Categories
         </h1>
       </div>

@@ -35,18 +35,11 @@ const TopHeaders = () => {
       <div className="w-main flex items-center justify-end text-[18px] text-white">
         {isLoggedIn && current ? (
           <div className=" flex gap-4 w-full md:w-fit text-[18px] justify-between md:justify-start items-center">
-            <span className="pl-2">{`Welcome, ${current?.lastname} ${current?.firstname}`}</span>
-            <span
-              onClick={() => dispatch(logout())}
-              className="hover:rounded-full hover:bg-gray-200 cursor-pointer hover:text-main p-2"
-              aria-label="logout"
-            >
-              <AiOutlineLogout size={20} />
-            </span>
+            <span className="pl-2">{`Xin chào, ${current?.firstname} ${current?.lastname} `}</span>
           </div>
         ) : (
           <Link className="hover:text-gray-800" to={`/${path.LOGIN}`}>
-            Sign In or Create Account
+            Đăng ký/Đăng nhập
           </Link>
         )}
       </div>

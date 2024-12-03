@@ -24,9 +24,11 @@ export const apiDeleteCategory = (id) =>
     method: "delete",
   });
 
-export const apiUpdateCategory = (data, id) =>
+export const apiUpdateCategory = (data, pid) =>
   axios({
-    url: "/prodcategory/" + id,
+    url: "/prodcategory/" + pid,
     method: "put",
     data,
   });
+
+

@@ -30,28 +30,28 @@ const Header = () => {
   }, []);
 
   return (
-    <div className="md:w-main w-full flex justify-between md:h-[120px] py-[30px]">
+    <div className="md:w-main w-full flex justify-between md:h-[105px] py-[33px]">
       <Link className="h-fit" to={`/${path.HOME}`}>
         <img
           src={logo}
           alt="logo"
-          className="h-[50px] w-auto md:w-[190px] pl-24 md:h-fit object-contain"
+          className="w-auto md:w-[180px] pl-24 md:h-fit object-contain"
         />
       </Link>
-      <div className="flex text-[13px]">
+      <div className="flex text-[14px]">
         <div className="md:flex hidden flex-col px-6 border-r items-center">
           <span className="flex gap-4 items-center">
             <RiPhoneFill color="red" />
             <span className="font-semibold">(+84) 123 456789</span>
           </span>
-          <span>Mon-Sat 9:00AM - 8:00PM</span>
+          <span>Thứ 2 - Thứ 7 9:00AM - 8:00PM</span>
         </div>
         <div className="md:flex hidden flex-col items-center px-6 border-r">
           <span className="flex gap-4 items-center">
             <MdEmail color="red" />
             <span className="font-semibold">HUTECH@GMAIL.COM</span>
           </span>
-          <span>Online Support 24/7</span>
+          <span>Hỗ trợ trực tuyến 24/7</span>
         </div>
         {current && (
           <Fragment>
@@ -70,7 +70,7 @@ const Header = () => {
                   <AiOutlineShoppingCart size={20} color="red" />
                   <span className="hidden md:inline-block">{`${
                     current?.cart?.length || 0
-                  } item(s)`}</span>
+                  } sản phẩm`}</span>
                 </span>
               </div>
             )}
@@ -80,7 +80,7 @@ const Header = () => {
               id="profile"
             >
               <FaUserCircle size={22} color="red" />
-              <span className="hidden md:inline-block">Profile</span>
+              <span className="hidden md:inline-block">Hồ sơ</span>
               {isShowOption && (
                 <div
                   onClick={(e) => e.stopPropagation()}
@@ -91,7 +91,7 @@ const Header = () => {
                       className="p-2 w-full hover:bg-sky-100"
                       to={`/${path.MEMBER}/${path.PERSONAL}`}
                     >
-                      Personal
+                      Cá nhân
                     </Link>
                   )}
                   {[1945, 1980].includes(+current.role) && (
@@ -99,9 +99,16 @@ const Header = () => {
                       className="p-2 w-full hover:bg-sky-100"
                       to={`/${path.ADMIN}/${path.DASHBOARD}`}
                     >
-                      Workspace
+                      Admin
                     </Link>
                   )}
+                  <span
+                    onClick={() => dispatch(logout())}
+                    className="p-2 w-full hover:bg-sky-100"
+                    aria-label="logout"
+                  >
+                    Đăng xuất
+                  </span>
                 </div>
               )}
             </div>

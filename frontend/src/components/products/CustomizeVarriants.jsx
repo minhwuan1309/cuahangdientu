@@ -25,7 +25,7 @@ const CustomizeVarriants = ({ customizeVarriant, setCustomizeVarriant, render })
         })
     }, [customizeVarriant])
     const handleAddVarriant = async (data) => {
-        if (data.color === customizeVarriant.color) Swal.fire('Oops!', 'Color not changed', 'info')
+        if (data.color === customizeVarriant.color) Swal.fire('Lỗi!', 'Không thể đổi màu', 'info')
         else {
             const formData = new FormData()
             for (let i of Object.entries(data)) formData.append(i[0], i[1])
@@ -51,7 +51,7 @@ const CustomizeVarriants = ({ customizeVarriant, setCustomizeVarriant, render })
         const imagesPreview = []
         for (let file of files) {
             if (file.type !== 'image/png' && file.type !== 'image/jpeg') {
-                toast.warning('File not supported!')
+                toast.warning('Tệp không được hỗ trợ!')
                 return
             }
             const base64 = await getBase64(file)

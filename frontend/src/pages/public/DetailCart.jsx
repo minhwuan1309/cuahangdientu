@@ -10,22 +10,41 @@ import path from 'utils/path'
 const DetailCart = ({ location, navigate }) => {
     const { currentCart, current } = useSelector(state => state.user)
     const handleSubmit = () => {
-        if (!current?.address) return Swal.fire({
-            icon: 'info',
-            title: 'Almost!',
-            text: 'Please update your address before checkout.',
-            showCancelButton: true,
-            showConfirmButton: true,
-            confirmButtonText: 'Go update',
-            cancelButtonText: 'Cancel',
+      if (currentCart?.length === 0) {
+        return Swal.fire({
+          icon: "info",
+          title: "Giỏ hàng của bạn đang trống",
+          text: "Vui lòng thêm sản phẩm vào giỏ hàng trước khi thanh toán.",
+          showCancelButton: false,
+          confirmButtonText: "Quay lại trang chủ",
+        }).then(() => {
+          navigate(`/${path.HOME}`);
+        });
+      }
+
+      if (!current?.address) {
+        return Swal.fire({
+          icon: "info",
+          title: "Chưa hoàn tất!",
+          text: "Vui lòng cập nhật địa chỉ của bạn trước khi thanh toán.",
+          showCancelButton: true,
+          showConfirmButton: true,
+          confirmButtonText: "Cập nhật",
+          cancelButtonText: "Hủy",
         }).then((result) => {
-            if (result.isConfirmed) navigate({
-                pathname: `/${path.MEMBER}/${path.PERSONAL}`,
-                search: createSearchParams({ redirect: location.pathname }).toString()
-            })
-        })
-        else navigate(`/${path.CHECKOUT}`)
-    }
+          if (result.isConfirmed) {
+            navigate({
+              pathname: `/${path.MEMBER}/${path.PERSONAL}`,
+              search: createSearchParams({
+                redirect: location.pathname,
+              }).toString(),
+            });
+          }
+        });
+      } else {
+        navigate(`/${path.CHECKOUT}`);
+      }
+    };
     return (
         <div className='w-full'>
             <div className='h-[81px] flex justify-center items-center bg-gray-100'>

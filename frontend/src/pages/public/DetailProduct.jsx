@@ -35,7 +35,7 @@ const DetailProduct = ({ isQuickView, data, location, dispatch, navigate }) => {
   const params = useParams();
   const { current } = useSelector((state) => state.user);
   const [product, setProduct] = useState(null);
-  const [currentImage, setCurrentImage] = useState(null); // Hình ảnh chính hiện tại
+  const [currentImage, setCurrentImage] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [relatedProducts, setRelatedProducts] = useState(null);
   const [update, setUpdate] = useState(false);
@@ -316,23 +316,25 @@ const handleClickImage = (el) => {
           </div>
 
           {/* Số lượng và thêm vào giỏ hàng */}
-          <div className="flex flex-col gap-8">
-            <div className="flex items-center gap-4">
-              <span className="font-semibold text-gray-700">Số lượng:</span>
-              <SelectQuantity
-                quantity={quantity}
-                handleQuantity={handleQuantity}
-                handleChangeQuantity={handleChangeQuantity}
-              />
+          {current?.role === 1945 && (
+            <div className="flex flex-col gap-8">
+              <div className="flex items-center gap-4">
+                <span className="font-semibold text-gray-700">Số lượng:</span>
+                <SelectQuantity
+                  quantity={quantity}
+                  handleQuantity={handleQuantity}
+                  handleChangeQuantity={handleChangeQuantity}
+                />
+              </div>
+              <Button
+                handleOnClick={handleAddToCart}
+                fw
+                className="bg-red-500 text-white px-6 py-3 rounded-md hover:bg-red-600 transition-all"
+              >
+                Thêm vào giỏ hàng
+              </Button>
             </div>
-            <Button
-              handleOnClick={handleAddToCart}
-              fw
-              className="bg-red-500 text-white px-6 py-3 rounded-md hover:bg-red-600 transition-all"
-            >
-              Thêm vào giỏ hàng
-            </Button>
-          </div>
+          )}
         </div>
 
         {!isQuickView && (

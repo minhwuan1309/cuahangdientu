@@ -9,7 +9,7 @@ const createProduct = asyncHandler(async (req, res) => {
   const images = req.files?.images?.map((el) => el.path);
 
   if (!(title && price && description && brand && category && color))
-    throw new Error("Missing inputs");
+    throw new Error("Vui lòng nhập đủ thông tin");
 
   req.body.slug = slugify(title);
 
@@ -34,7 +34,7 @@ const getProduct = asyncHandler(async (req, res) => {
   })
   return res.status(200).json({
     success: product ? true : false,
-    productData: product ? product : "Cannot get product",
+    productData: product ? product : "Không thể lấy thông tin sản phẩm",
   })
 })
 // Filtering, sorting & pagination
@@ -106,7 +106,7 @@ const getProducts = asyncHandler(async (req, res) => {
     return res.status(200).json({
       success: response ? true : false,
       counts,
-      products: response ? response : "Cannot get products",
+      products: response ? response : "Không thể lấy thông tin sản phẩm",
     })
   })
 })
@@ -114,53 +114,60 @@ const updateProduct = asyncHandler(async (req, res) => {
   const { pid } = req.params;
   const files = req?.files;
 
-  // Validate and assign thumbnail if it exists
+  // Kiểm tra và gán ảnh thumbnail nếu có
   if (files?.thumb && files?.thumb[0]?.path) {
     req.body.thumb = files.thumb[0].path;
   }
 
-  // Validate and filter valid images
+  // Kiểm tra và lọc danh sách ảnh hợp lệ
   if (files?.images) {
     req.body.images = files.images
-      .filter((image) => image && image.path) // Filter valid images
+      .filter((image) => image && image.path)
       .map((el) => el.path);
   }
 
-  // Generate slug from title if available
+  // Tạo slug từ tiêu đề nếu có
   if (req.body && req.body.title) {
     req.body.slug = slugify(req.body.title);
   }
 
-  // Update the product
+  // Cập nhật sản phẩm
   const updatedProduct = await Product.findByIdAndUpdate(pid, req.body, {
     new: true,
   });
 
   return res.status(200).json({
     success: !!updatedProduct,
-    mes: updatedProduct ? "Updated." : "Cannot update product",
+    mes: updatedProduct
+      ? "Cập nhật sản phẩm thành công."
+      : "Không thể cập nhật sản phẩm.",
   });
 });
 
 const deleteProduct = asyncHandler(async (req, res) => {
-  const { pid } = req.params
-  const deletedProduct = await Product.findByIdAndDelete(pid)
+  const { pid } = req.params;
+  const deletedProduct = await Product.findByIdAndDelete(pid);
   return res.status(200).json({
-    success: deletedProduct ? true : false,
-    mes: deletedProduct ? "Deleted." : "Cannot delete product",
-  })
-})
+    success: !!deletedProduct,
+    mes: deletedProduct
+      ? "Xóa sản phẩm thành công."
+      : "Không thể xóa sản phẩm.",
+  });
+});
+
 const ratings = asyncHandler(async (req, res) => {
-  const { _id } = req.user
-  const { star, comment, pid, updatedAt } = req.body
-  if (!star || !pid) throw new Error("Missing inputs")
-  const ratingProduct = await Product.findById(pid)
+  const { _id } = req.user;
+  const { star, comment, pid, updatedAt } = req.body;
+
+  if (!star || !pid) throw new Error("Vui lòng nhập đủ thông tin.");
+
+  const ratingProduct = await Product.findById(pid);
   const alreadyRating = ratingProduct?.ratings?.find(
     (el) => el.postedBy.toString() === _id
-  )
-  // console.log(alreadyRating);
+  );
+
   if (alreadyRating) {
-    // update star & comment
+    // Cập nhật đánh giá
     await Product.updateOne(
       {
         ratings: { $elemMatch: alreadyRating },
@@ -173,53 +180,62 @@ const ratings = asyncHandler(async (req, res) => {
         },
       },
       { new: true }
-    )
+    );
   } else {
-    // add star & comment
+    // Thêm đánh giá mới
     await Product.findByIdAndUpdate(
       pid,
       {
         $push: { ratings: { star, comment, postedBy: _id, updatedAt } },
       },
       { new: true }
-    )
+    );
   }
 
-  // Sum ratings
-  const updatedProduct = await Product.findById(pid)
-  const ratingCount = updatedProduct.ratings.length
+  // Tính tổng số sao
+  const updatedProduct = await Product.findById(pid);
+  const ratingCount = updatedProduct.ratings.length;
   const sumRatings = updatedProduct.ratings.reduce(
     (sum, el) => sum + +el.star,
     0
-  )
-  updatedProduct.totalRatings = Math.round((sumRatings * 10) / ratingCount) / 10
+  );
+  updatedProduct.totalRatings =
+    Math.round((sumRatings * 10) / ratingCount) / 10;
 
-  await updatedProduct.save()
+  await updatedProduct.save();
 
   return res.status(200).json({
     success: true,
     updatedProduct,
-  })
-})
+  });
+});
+
 const uploadImagesProduct = asyncHandler(async (req, res) => {
-  const { pid } = req.params
-  if (!req.files) throw new Error("Missing inputs")
+  const { pid } = req.params;
+
+  if (!req.files) throw new Error("Vui lòng nhập đủ thông tin.");
+
   const response = await Product.findByIdAndUpdate(
     pid,
     { $push: { images: { $each: req.files.map((el) => el.path) } } },
     { new: true }
-  )
+  );
+
   return res.status(200).json({
-    success: response ? true : false,
-    updatedProduct: response ? response : "Cannot upload images product",
-  })
-})
+    success: !!response,
+    updatedProduct: response || "Không thể tải ảnh lên.",
+  });
+});
+
 const addVarriant = asyncHandler(async (req, res) => {
-  const { pid } = req.params
-  const { title, price, color } = req.body
-  const thumb = req?.files?.thumb[0]?.path
-  const images = req.files?.images?.map((el) => el.path)
-  if (!(title && price && color)) throw new Error("Missing inputs")
+  const { pid } = req.params;
+  const { title, price, color } = req.body;
+  const thumb = req?.files?.thumb[0]?.path;
+  const images = req.files?.images?.map((el) => el.path);
+
+  if (!title || !price || !color)
+    throw new Error("Vui lòng nhập đủ thông tin.");
+
   const response = await Product.findByIdAndUpdate(
     pid,
     {
@@ -235,12 +251,16 @@ const addVarriant = asyncHandler(async (req, res) => {
       },
     },
     { new: true }
-  )
+  );
+
   return res.status(200).json({
-    success: response ? true : false,
-    mes: response ? "Added varriant." : "Cannot upload images product",
-  })
-})
+    success: !!response,
+    mes: response
+      ? "Thêm thành công."
+      : "Không thể thêm biến thể sản phẩm.",
+  });
+});
+
 
 module.exports = {
   createProduct,
