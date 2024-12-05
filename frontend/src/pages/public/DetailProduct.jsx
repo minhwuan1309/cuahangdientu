@@ -316,7 +316,7 @@ const handleClickImage = (el) => {
           </div>
 
           {/* Số lượng và thêm vào giỏ hàng */}
-          {current?.role === 1945 && (
+          {current?.role !== 1945 && (
             <div className="flex flex-col gap-8">
               <div className="flex items-center gap-4">
                 <span className="font-semibold text-gray-700">Số lượng:</span>

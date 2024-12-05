@@ -194,7 +194,7 @@ const getDashboard = asyncHandler(async (req, res) => {
             $and: [
               { createdAt: { $gte: new Date(start) } },
               { createdAt: { $lte: new Date(end) } },
-              { status: "Succeed" },
+              { status: "Đã thanh toán" },
             ],
           },
         },
@@ -211,7 +211,7 @@ const getDashboard = asyncHandler(async (req, res) => {
             $and: [
               { createdAt: { $gte: new Date(start) } },
               { createdAt: { $lte: new Date(end) } },
-              { status: "Pending" },
+              { status: "Chưa thanh toán" },
             ],
           },
         },
@@ -228,7 +228,7 @@ const getDashboard = asyncHandler(async (req, res) => {
             $and: [
               { createdAt: { $gte: new Date(start) } },
               { createdAt: { $lte: new Date(end) } },
-              { status: "Succeed" },
+              { status: "Đã thanh toán" },
             ],
           },
         },
@@ -245,7 +245,7 @@ const getDashboard = asyncHandler(async (req, res) => {
             $and: [
               { createdAt: { $gte: new Date(start) } },
               { createdAt: { $lte: new Date(end) } },
-              { status: "Succeed" },
+              { status: "Đã thanh toán" },
             ],
           },
         },

@@ -1,5 +1,6 @@
 import React, { memo } from "react";
 import icons from "utils/icons";
+import MapComponent from "./MapComponent";
 
 const { MdEmail } = icons;
 const Footer = () => {
@@ -48,6 +49,9 @@ const Footer = () => {
               <span>Email: </span>
               <span className="opacity-70">hutech@edu.vn</span>
             </span>
+            {/* <div className="map-container">
+              <MapComponent />
+            </div> */}
           </div>
           <div className="flex-1 flex flex-col gap-2">
             <h3 className="mb-[20px] mt-8 text-[15px] font-medium border-l-2 border-main pl-[15px]">

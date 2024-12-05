@@ -181,13 +181,21 @@ const ManageOrder = () => {
                 <td className="text-center py-2">
                   {editOrder?._id === el._id ? (
                     <select {...register("status")} className="form-select">
-                      <option value="Cancelled">Cancelled</option>
-                      <option value="Succeed">Succeed</option>
-                      <option value="Pending">Pending</option>
+                      <option value="Cancelled">Đơn hàng bị huỷ</option>
+                      <option value="Succeed">Đã thanh toán</option>
+                      <option value="Pending">Chưa thanh toán</option>
                     </select>
+                  ) : // Chuyển đổi giá trị status trước khi hiển thị
+                  el.status === "Cancelled" ? (
+                    "Đơn hàng bị huỷ"
+                  ) : el.status === "Succeed" ? (
+                    "Đã thanh toán"
+                  ) : el.status === "Pending" ? (
+                    "Chưa thanh toán"
                   ) : (
                     el.status
-                  )}
+                  ) // Nếu không phải các giá trị trên thì giữ nguyên
+                  }
                 </td>
                 <td className="flex flex-col items-center text-center py-11">
                   <span>{moment(el.createdAt).format("DD/MM/YYYY")}</span>
