@@ -14,7 +14,7 @@ export const navigation = [
   },
   {
     id: 3,
-    value: "BLOGS",
+    value: "BÀI VIẾT",
     path: `/${path.BLOGS}`,
   },
   {
@@ -27,93 +27,85 @@ const { RiTruckFill, BsShieldShaded, BsReplyFill, FaTty, AiFillGift } = icons
 export const productExtraInfomation = [
   {
     id: "1",
-    title: "Guarantee",
-    sub: "Quality Checked",
+    title: "Bảo hành",
+    sub: "Kiểm tra chất lượng",
     icon: <BsShieldShaded />,
   },
   {
     id: "2",
-    title: "Free Shipping",
-    sub: "Free On All Products",
+    title: "Miễn phí vận chuyển",
+    sub: "Miễn phí cho tất cả sản phẩm",
     icon: <RiTruckFill />,
   },
   {
     id: "3",
-    title: "Special Gift Cards",
-    sub: "Special Gift Cards",
+    title: "Thẻ quà tặng đặc biệt",
+    sub: "Thẻ quà tặng đặc biệt",
     icon: <AiFillGift />,
   },
   {
     id: "4",
-    title: "Free Return",
-    sub: "Within 7 Days",
+    title: "Đổi trả miễn phí",
+    sub: "Trong vòng 7 ngày",
     icon: <BsReplyFill />,
   },
   {
     id: "5",
-    title: "Consultancy",
-    sub: "Lifetime 24/7/356",
+    title: "Tư vấn",
+    sub: "Hỗ trợ 24/7",
     icon: <FaTty />,
   },
-]
+];
+
 
 export const productInfoTabs = [
   {
     id: 1,
-    name: "DISCRIPTION",
-    content: `Technology: GSM / HSPA / LTE
-        Dimensions: 153.8 x 75.5 x 7.6 mm
-        Weight: 154 g
-        Display: IPS LCD 5.5 inches
-        Resolution: 720 x 1280
-        OS: Android OS, v6.0 (Marshmallow)
+    name: "MÔ TẢ",
+    content: `Công nghệ: GSM / HSPA / LTE
+        Kích thước: 153.8 x 75.5 x 7.6 mm
+        Trọng lượng: 154 g
+        Màn hình: IPS LCD 5.5 inches
+        Độ phân giải: 720 x 1280
+        Hệ điều hành: Android OS, v6.0 (Marshmallow)
         Chipset: Octa-core
         CPU: Octa-core
-        Internal: 32 GB, 4 GB RAM
-        Camera: 13MB - 20 MP`,
+        Bộ nhớ trong: 32 GB, 4 GB RAM
+        Camera: 13MP - 20 MP`,
   },
   {
     id: 2,
-    name: "WARRANTY",
-    content: `WARRANTY INFORMATION
-        LIMITED WARRANTIES
-        Limited Warranties are non-transferable. The following Limited Warranties are given to the original retail purchaser of the following Ashley Furniture Industries, Inc.Products:
+    name: "BẢO HÀNH",
+    content: `THÔNG TIN BẢO HÀNH
+        BẢO HÀNH CÓ GIỚI HẠN
+        Bảo hành có giới hạn không thể chuyển nhượng. Bảo hành có giới hạn sau đây được cấp cho người mua bán lẻ ban đầu của các sản phẩm Ashley Furniture Industries, Inc. như sau:
         
-        Frames Used In Upholstered and Leather Products
-        Limited Lifetime Warranty
-        A Limited Lifetime Warranty applies to all frames used in sofas, couches, love seats, upholstered chairs, ottomans, sectionals, and sleepers. Ashley Furniture Industries,Inc. warrants these components to you, the original retail purchaser, to be free from material manufacturing defects.`,
+        Khung sử dụng trong sản phẩm bọc vải và da
+        Bảo hành suốt đời có giới hạn
+        Bảo hành suốt đời có giới hạn áp dụng cho tất cả các khung được sử dụng trong ghế sofa, ghế dài, ghế yêu, ghế bọc, ghế ottoman, ghế góc và giường. Ashley Furniture Industries, Inc. bảo hành các thành phần này cho bạn, người mua bán lẻ ban đầu, rằng chúng không có lỗi sản xuất vật liệu.`,
   },
   {
     id: 3,
-    name: "DELIVERY",
-    content: `PURCHASING & DELIVERY
-        Before you make your purchase, it’s helpful to know the measurements of the area you plan to place the furniture. You should also measure any doorways and hallways through which the furniture will pass to get to its final destination.
-        Picking up at the store
-        Shopify Shop requires that all products are properly inspected BEFORE you take it home to insure there are no surprises. Our team is happy to open all packages and will assist in the inspection process. We will then reseal packages for safe transport. We encourage all customers to bring furniture pads or blankets to protect the items during transport as well as rope or tie downs. Shopify Shop will not be responsible for damage that occurs after leaving the store or during transit. It is the purchaser’s responsibility to make sure the correct items are picked up and in good condition.
-        Delivery
-        Customers are able to pick the next available delivery day that best fits their schedule. However, to route stops as efficiently as possible, Shopify Shop will provide the time frame. Customers will not be able to choose a time. You will be notified in advance of your scheduled time frame. Please make sure that a responsible adult (18 years or older) will be home at that time.
-        In preparation for your delivery, please remove existing furniture, pictures, mirrors, accessories, etc. to prevent damages. Also insure that the area where you would like your furniture placed is clear of any old furniture and any other items that may obstruct the passageway of the delivery team. Shopify Shop will deliver, assemble, and set-up your new furniture purchase and remove all packing materials from your home. Our delivery crews are not permitted to move your existing furniture or other household items. Delivery personnel will attempt to deliver the purchased items in a safe and controlled manner but will not attempt to place furniture if they feel it will result in damage to the product or your home. Delivery personnel are unable to remove doors, hoist furniture or carry furniture up more than 3 flights of stairs. An elevator must be available for deliveries to the 4th floor and above.`,
+    name: "VẬN CHUYỂN",
+    content: `MUA HÀNG & VẬN CHUYỂN
+        Trước khi mua, bạn nên biết kích thước của khu vực bạn định đặt đồ nội thất. Bạn cũng nên đo kích thước của cửa ra vào và hành lang mà sản phẩm sẽ đi qua để đến vị trí cuối cùng.
+        Lấy hàng tại cửa hàng
+        Cửa hàng Shopify yêu cầu tất cả các sản phẩm phải được kiểm tra kỹ lưỡng TRƯỚC KHI bạn mang về nhà để đảm bảo không có bất ngờ. Đội ngũ của chúng tôi rất vui khi mở tất cả các gói hàng và sẽ hỗ trợ trong quá trình kiểm tra. Sau đó, chúng tôi sẽ niêm phong lại các gói hàng để vận chuyển an toàn. Chúng tôi khuyến khích tất cả khách hàng mang...`,
   },
-  {
-    id: 4,
-    name: "PAYMENT",
-    content: `
-        Customers are able to pick the next available delivery day that best fits their schedule. However, to route stops as efficiently as possible, Shopify Shop will provide the time frame. Customers will not be able to choose a time. You will be notified in advance of your scheduled time frame. Please make sure that a responsible adult (18 years or older) will be home at that time.
-        In preparation for your delivery, please remove existing furniture, pictures, mirrors, accessories, etc. to prevent damages. Also insure that the area where you would like your furniture placed is clear of any old furniture and any other items that may obstruct the passageway of the delivery team. Shopify Shop will deliver, assemble, and set-up your new furniture purchase and remove all packing materials from your home. Our delivery crews are not permitted to move your existing furniture or other household items. Delivery personnel will attempt to deliver the purchased items in a safe and controlled manner but will not attempt to place furniture if they feel it will result in damage to the product or your home. Delivery personnel are unable to remove doors, hoist furniture or carry furniture up more than 3 flights of stairs. An elevator must be available for deliveries to the 4th floor and above.`,
-  },
-]
+];
+
 
 export const colors = [
-  "đen",
-  "nâu",
-  "xám",
-  "trắng",
-  "hồng",
-  "vàng",
-  "cam",
-  "tím",
-  "xanh lá",
-  "xanh",
+  "Đen",
+  "Nâu",
+  "Xám",
+  "Trắng",
+  "Hồng",
+  "Vàng",
+  "Cam",
+  "Tím",
+  "Xanh lá",
+  "Xanh",
 ];
 
 export const sorts = [
@@ -183,14 +175,14 @@ export const adminSidebar = [
   {
     id: 1,
     type: "SINGLE",
-    text: "Dashboard",
+    text: "Tổng quát",
     path: `/${path.ADMIN}/${path.DASHBOARD}`,
     icon: <AiOutlineDashboard size={20} />,
   },
   {
     id: 2,
     type: "SINGLE",
-    text: "Quản lý account",
+    text: "Quản lý tài khoản",
     path: `/${path.ADMIN}/${path.MANAGE_USER}`,
     icon: <MdGroups size={20} />,
   },
@@ -234,17 +226,17 @@ export const adminSidebar = [
     ],
   },
   {
-    id: 31,
+    id: 6,
     type: "PARENT",
-    text: "Blogs",
+    text: "Bài viết",
     icon: <TbBrandProducthunt size={20} />,
     submenu: [
       {
-        text: "Tạo bài blog",
+        text: "Tạo bài viết",
         path: `/${path.ADMIN}/${path.CREATE_BLOG}`,
       },
       {
-        text: "Quản lý bài blog",
+        text: "Quản lý bài viết",
         path: `/${path.ADMIN}/${path.MANAGE_BLOGS}`,
       },
     ],
@@ -273,7 +265,7 @@ export const memberSidebar = [
     icon: <RiBillLine size={20} />,
   },
   {
-    id: 40,
+    id: 5,
     type: "SINGLE",
     text: "Danh sách yêu thích",
     path: `/${path.MEMBER}/${path.WISHLIST}`,
@@ -308,11 +300,11 @@ export const blockStatus = [
 ]
 export const statusOrders = [
   {
-    label: "Cancalled",
-    value: "Cancalled",
+    label: "Cancelled",
+    value: "Cancelled",
   },
   {
     label: "Succeed",
     value: "Succeed",
   },
-]
+];

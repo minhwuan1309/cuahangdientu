@@ -2,15 +2,17 @@ const Blog = require("../models/blog")
 const asyncHandler = require("express-async-handler")
 
 const createNewBlog = asyncHandler(async (req, res) => {
+  try{
   const { title, description, hashtags } = req.body;
-  if (!req.file) throw new Error("Vui lòng nhập đủ thông tin!");
-  if (!title || !description || !hashtags)
-    throw new Error("Vui lòng nhập đủ thông tin!");
-  const response = await Blog.create({ ...req.body, image: req.file.path });
-  return res.json({
-    success: !!response,
-    mes: response ? "Đã tạo bài viết." : "Không thể tạo bài viết mới",
-  });
+    if (!req.file) throw new Error("Vui lòng nhập đủ thông tin!");
+    if (!title || !description || !hashtags)
+      throw new Error("Vui lòng nhập đủ thông tin!");
+    const response = await Blog.create({ ...req.body, image: req.file.path });
+    res.json({ success: true, mes: "Created blog.", response });
+  }catch{
+    console.error(error.message); // Log lỗi tại đây
+    res.status(500).json({ success: false, mes: error.message });
+  }
 });
 
 const updateBlog = asyncHandler(async (req, res) => {
@@ -42,9 +44,14 @@ const getBlogs = asyncHandler(async (req, res) => {
   const qr = { ...formatedQueries, ...queryObject };
   let queryCommand = Blog.find(qr);
   if (req.query.sort) {
-    const sortBy = req.query.sort.split(",").join(" ");
+    const sortBy =
+      req.query.sort === "createdAt:asc" ? "createdAt" : "-createdAt"; // Tăng dần hoặc giảm dần
     queryCommand = queryCommand.sort(sortBy);
+  } else {
+    queryCommand = queryCommand.sort("-createdAt"); // Mặc định: Mới nhất
   }
+
+
   if (req.query.fields) {
     const fields = req.query.fields.split(",").join(" ");
     queryCommand = queryCommand.select(fields);
@@ -194,4 +201,3 @@ module.exports = {
   deleteBlog,
   uploadImagesBlog,
 }
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2VlNDMwODJlODRhODVlMjU4NDMwNDEiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2Nzc2Nzg5NjEsImV4cCI6MTY3Nzg1MTc2MX0.BnP1r4AKh0spfZz5ugYu2PwqIzOLBn9RxGiGO7M_yKc

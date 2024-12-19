@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { getBase64 } from "utils/helpers";
+
 const CreateCategory = () => {
   const {
     register,
@@ -17,14 +18,14 @@ const CreateCategory = () => {
   const [brands, setBrands] = useState([""]);
   const [preview, setPreview] = useState({ image: null });
 
-  // Add a new brand input field
+  // Thêm trường nhập mới cho nhãn hiệu
   const addBrandField = () => setBrands((prev) => [...prev, ""]);
 
-  // Remove a brand input field by index
+  // Xóa trường nhập nhãn hiệu theo chỉ số
   const removeBrandField = (index) =>
     setBrands((prev) => prev.filter((_, i) => i !== index));
 
-  // Handle change in a specific brand input
+  // Xử lý thay đổi trong trường nhập nhãn hiệu
   const handleBrandChange = (index, value) => {
     const updatedBrands = [...brands];
     updatedBrands[index] = value;
@@ -44,32 +45,30 @@ const CreateCategory = () => {
     }
   }, [watch("image")]);
 
-  // Handle form submission
+  // Xử lý khi người dùng gửi form
   const handlePublish = async (data) => {
     const formData = new FormData();
     formData.append("title", data.title);
     brands
       .filter((brand) => brand.trim() !== "")
-      .forEach((brand, index) => {
-        formData.append(`brand[${index}]`, brand);
-      });
-    formData.append("image", data.image[0]); // Ensure image is appended correctly
+      .forEach((brand) => formData.append("brands[]", brand));
+    if (preview.image) {
+      formData.append("image", preview.image);
+    }
 
+    setIsLoading(true);
     try {
-      const response = await apiCreateCategory(formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      if (response.success) {
-        toast.success("Category created successfully!");
-        reset(); // Reset form inputs and thumbnails
-        setBrands([""]);
+      const response = await apiCreateCategory(formData);
+      if (response?.success) {
+        toast.success("Danh mục đã được tạo thành công!");
+        reset();
       } else {
-        toast.error(response.message || "Failed to create category!");
+        toast.error("Có lỗi xảy ra. Vui lòng thử lại!");
       }
     } catch (error) {
+      toast.error("Có lỗi xảy ra khi tạo danh mục!");
+    } finally {
       setIsLoading(false);
-      toast.error("An error occurred while creating the category.");
-      console.error(error);
     }
   };
 
@@ -78,7 +77,7 @@ const CreateCategory = () => {
       {/* Header */}
       <div className="flex justify-between items-center border-b pb-4">
         <h1 className="text-3xl font-semibold text-gray-700">
-          Create New Category
+          Tạo loại sản phẩm
         </h1>
       </div>
 
@@ -87,10 +86,10 @@ const CreateCategory = () => {
         onSubmit={handleSubmit(handlePublish)}
         className="space-y-6 flex flex-col"
       >
-        {/* Category Name */}
+
         <div>
           <label className="block text-xl font-medium text-gray-700 mb-2">
-            Category Name
+            Tên loại:
           </label>
           <InputForm
             id="title"
@@ -102,9 +101,9 @@ const CreateCategory = () => {
             placeholder="Enter category name"
           />
         </div>
-        {/* Brands */}
+
         <div className="space-y-2 py-4">
-          <label className="font-semibold text-xl">Thương hiệu</label>
+          <label className="font-semibold text-xl">Thương hiệu (có thể thêm nhiều):</label>
           {brands.map((brand, index) => (
             <div
               key={index}
@@ -146,9 +145,6 @@ const CreateCategory = () => {
         {/* Preview Thumbnail */}
         {preview.image && (
           <div className="py-4">
-            <label className="block text-lg font-medium text-gray-700 mb-2">
-              Preview
-            </label>
             <img
               src={preview.image}
               alt="Preview"
@@ -167,7 +163,7 @@ const CreateCategory = () => {
             }`}
             disabled={isLoading}
           >
-            {isLoading ? "Creating..." : "Create Category"}
+            {isLoading ? "Đang tạo mới..." : "Tạo mới"}
           </button>
         </div>
       </form>

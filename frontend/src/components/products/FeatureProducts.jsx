@@ -1,27 +1,46 @@
-import React, { useState, useEffect, memo } from "react"
-import { ProductCard } from "components"
-import { apiGetProducts } from "apis"
+import React, { useState, useEffect } from "react";
+import { ProductCard } from "components";
+import { apiGetProducts } from "apis";
 
 const FeatureProducts = () => {
-  const [products, setProducts] = useState(null)
+  const [products, setProducts] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchProducts = async () => {
-    const response = await apiGetProducts({ limit: 6, sort: "-totalRatings" })
-    if (response.success) setProducts(response.products)
-  }
+    const response = await apiGetProducts({
+      limit: 6,
+      sort: "-totalRatings",
+    });
+    if (response.success) setProducts(response.products);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    fetchProducts()
-  }, [])
+    fetchProducts();
+  }, []);
+
+  if (loading) {
+    return <div>Đang tải...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className="w-full">
       <h3 className="text-[20px] font-semibold py-[15px] border-b-2 border-main">
-        FEATURED
+        SẢN PHẨM NỔI BẬT
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-4">
-        {products?.map((el) => (
-          <ProductCard key={el._id} pid={el._id} image={el.thumb} {...el} />
-        ))}
+        {products?.length > 0 ? (
+          products.map((el) => (
+            <ProductCard key={el._id} pid={el._id} image={el.thumb} {...el} />
+          ))
+        ) : (
+          <div>Không có sản phẩm nổi bật.</div>
+        )}
       </div>
       <div className="grid-cols-4 hidden lg:grid grid-rows-2 gap-4">
         <img
@@ -46,7 +65,7 @@ const FeatureProducts = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default memo(FeatureProducts)
+export default FeatureProducts;

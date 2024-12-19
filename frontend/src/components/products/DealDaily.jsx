@@ -11,65 +11,82 @@ import { getDealDaily } from "store/products/productSlice"
 const { AiFillStar, AiOutlineMenu } = icons
 let idInterval
 const DealDaily = ({ dispatch }) => {
-  const [hour, setHour] = useState(0)
-  const [minute, setMinute] = useState(0)
-  const [second, setSecond] = useState(0)
-  const [expireTime, setExpireTime] = useState(false)
-  const { dealDaily } = useSelector((s) => s.products)
+  const [hour, setHour] = useState(0);
+  const [minute, setMinute] = useState(0);
+  const [second, setSecond] = useState(0);
+  const [expireTime, setExpireTime] = useState(false);
+  const { dealDaily } = useSelector((s) => s.products);
   const [price, setPrice] = useState(0);
 
   const fetchDealDaily = async () => {
-    const response = await apiGetProducts({ sort: "-totalRatings", limit: 20 })
-    console.log(response)
-    if (response.success) {
-      const pr = response.products[Math.round(Math.random() * 20)]
-      dispatch(
-        getDealDaily({ data: pr, time: Date.now() + 24 * 60 * 60 * 1000 })
-      )
+    console.log("Fetching deal of the day...");
+    try {
+      const response = await apiGetProducts({
+        sort: "-totalRatings",
+        limit: 20,
+      });
+      console.log(response); // Kiểm tra xem API có trả về kết quả không
+      if (response.success) {
+        const pr = response.products[Math.round(Math.random() * 20)];
+        dispatch(
+          getDealDaily({ data: pr, time: Date.now() + 24 * 60 * 60 * 1000 })
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching deal of the day:", error); // In lỗi nếu có
     }
-  }
+  };
 
   useEffect(() => {
     if (dealDaily?.time) {
-      const deltaTime = dealDaily.time - Date.now()
-      const number = secondsToHms(deltaTime)
-      setHour(number.h)
-      setMinute(number.m)
-      setSecond(number.s)
+      const deltaTime = dealDaily.time - Date.now();
+      const number = secondsToHms(deltaTime);
+      console.log("Time remaining:", number);
+      setHour(number.h);
+      setMinute(number.m);
+      setSecond(number.s);
     }
-  }, [dealDaily])
+  }, [dealDaily]);
+
   useEffect(() => {
-    idInterval && clearInterval(idInterval)
-    if (moment(moment(dealDaily?.time).format("MM/DD/YYYY")).isBefore(moment()))
-      fetchDealDaily()
-  }, [expireTime])
+    if (dealDaily?.time) {
+      const deltaTime = dealDaily.time - Date.now();
+      const { h, m, s } = secondsToHms(deltaTime);
+      setHour(h);
+      setMinute(m);
+      setSecond(s);
+    }
+  }, [dealDaily]);
+
   useEffect(() => {
+    idInterval && clearInterval(idInterval);
+
+    if (dealDaily?.time && moment(dealDaily?.time).isBefore(moment())) {
+      fetchDealDaily(); // Fetch new deal if expired
+    }
+
     idInterval = setInterval(() => {
-      if (second > 0) setSecond((prev) => prev - 1)
-      else {
-        if (minute > 0) {
-          setMinute((prev) => prev - 1)
-          setSecond(59)
-        } else {
-          if (hour > 0) {
-            setHour((prev) => prev - 1)
-            setMinute(59)
-            setSecond(59)
-          } else {
-            setExpireTime(!expireTime)
-          }
-        }
+      const deltaTime = dealDaily?.time - Date.now();
+      if (deltaTime <= 0) {
+        setExpireTime(true); // Mark as expired when time is up
+        clearInterval(idInterval); // Stop the interval
+      } else {
+        const { h, m, s } = secondsToHms(deltaTime);
+        setHour(h);
+        setMinute(m);
+        setSecond(s);
       }
-    }, 1000)
+    }, 1000);
+
     return () => {
-      clearInterval(idInterval)
-    }
-  }, [second, minute, hour, expireTime])
+      clearInterval(idInterval);
+    };
+  }, [dealDaily, expireTime]); // Run effect again when dealDaily or expireTime changes
 
   const discountPrice = (price) => {
-    if(!price) return 0;
-    return price - (price * 5) /100;
-  }
+    if (!price) return 0;
+    return price - (price * 5) / 100;
+  };
 
   return (
     <div className="border hidden lg:block w-full flex-auto">

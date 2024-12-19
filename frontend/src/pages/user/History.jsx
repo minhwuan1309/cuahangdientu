@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { createSearchParams, useSearchParams } from "react-router-dom"
 import { statusOrders } from "utils/contants"
+import { formatMoney } from "utils/helpers"
 
 const History = ({ navigate, location }) => {
   const [orders, setOrders] = useState(null)
@@ -71,10 +72,10 @@ const History = ({ navigate, location }) => {
         <thead>
           <tr className="border bg-sky-900 text-white border-white">
             <th className="text-center py-2">#</th>
-            <th className="text-center py-2">Products</th>
-            <th className="text-center py-2">Total</th>
-            <th className="text-center py-2">Status</th>
-            <th className="text-center py-2">Created At</th>
+            <th className="text-center py-2">Sản phẩm</th>
+            <th className="text-center py-2">Tổng tiền</th>
+            <th className="text-center py-2">Trạng thái thanh toán</th>
+            <th className="text-center py-2">Thời gian</th>
           </tr>
         </thead>
         <tbody>
@@ -86,33 +87,42 @@ const History = ({ navigate, location }) => {
                   idx +
                   1}
               </td>
-              <td className="text-center max-w-[500px] py-2">
-                <span className="grid grid-cols-4 gap-4">
-                  {el.products?.map((item) => (
-                    <span
-                      className="flex col-span-1 items-center gap-2"
-                      key={item._id}
+              <td className="text-center py-2 px-4">
+                <div className="max-w-sm flex flex-col gap-3">
+                  {el.products?.map((product) => (
+                    <div
+                      key={product._id}
+                      className="flex items-center gap-3 border-b pb-3 last:border-none"
                     >
                       <img
-                        src={item.thumbnail}
+                        src={product.thumbnail}
                         alt="thumb"
                         className="w-8 h-8 rounded-md object-cover"
                       />
-                      <span className="flex flex-col">
-                        <span className="text-main text-sm">{item.title}</span>
-                        <span className="flex items-center text-xs gap-2">
-                          <span>Quantity:</span>
-                          <span className="text-main">{item.quantity}</span>
-                        </span>
-                      </span>
-                    </span>
+                      <div className="flex text-x flex-col items-start gap-1">
+                        <h3 className="font-medium text-red-500">{product.title}</h3>
+                        <p className="text-gray-600">{product.color}</p>
+                        <p className="text-gray-600">{`${product.quantity} sản phẩm`}</p>
+                      </div>
+                    </div>
                   ))}
-                </span>
+                </div>
               </td>
-              <td className="text-center py-2">{el.total + " 💲"}</td>
-              <td className="text-center py-2">{el.status}</td>
+              <td className="text-center py-2">{`${formatMoney(
+                el.total * 25000
+              )} VNĐ`}</td>
               <td className="text-center py-2">
-                {moment(el.createdAt)?.format("DD/MM/YYYY")}
+                {el.status === "Cancelled"
+                  ? "Đơn hàng bị huỷ"
+                  : el.status === "Succeed"
+                  ? "Đã thanh toán"
+                  : el.status === "Pending"
+                  ? "Chưa thanh toán"
+                  : el.status}
+              </td>
+              <td className="flex flex-col items-center text-center py-11">
+                <span>{moment(el.createdAt).format("DD/MM/YYYY")}</span>
+                <span>{moment(el.updatedAt).format("HH:mm:ss")}</span>
               </td>
             </tr>
           ))}
@@ -122,7 +132,7 @@ const History = ({ navigate, location }) => {
         <Pagination totalCount={counts} />
       </div>
     </div>
-  )
+  );
 }
 
 export default withBaseComponent(History)

@@ -11,7 +11,6 @@ import {
   Products,
   FinalRegister,
   ResetPassword,
-  DetailCart,
 } from "pages/public"
 import {
   AdminLayout,
@@ -29,7 +28,8 @@ import {
   History,
   Wishlist,
   Checkout,
-} from "pages/user"
+  DetailCart,
+} from "pages/user";
 import path from "utils/path"
 import { getCategories } from "store/app/asyncActions"
 import { useDispatch, useSelector } from "react-redux"

@@ -1,5 +1,10 @@
 import clsx from "clsx";
-import { useSearchParams, useNavigate, createSearchParams, useLocation } from "react-router-dom";
+import {
+  useSearchParams,
+  useNavigate,
+  createSearchParams,
+  useLocation,
+} from "react-router-dom";
 import { memo } from "react";
 
 const PagiItem = ({ children }) => {
@@ -7,9 +12,11 @@ const PagiItem = ({ children }) => {
   const [params] = useSearchParams();
   const location = useLocation();
 
+  const currentPage = +params.get("page") || 1; // Mặc định là trang 1 nếu không có `page`
+
   const handlePagination = () => {
     const queries = Object.fromEntries([...params]);
-    queries.page = children; // Cập nhật `page` với giá trị hiện tại
+    queries.page = children; // Cập nhật tham số `page`
     navigate({
       pathname: location.pathname,
       search: createSearchParams(queries).toString(),
@@ -19,14 +26,14 @@ const PagiItem = ({ children }) => {
   return (
     <button
       className={clsx(
-        "w-10 h-10 flex justify-center",
-        Number(children) ? "items-center hover:rounded-full hover:bg-gray-300" : "items-end pb-2",
-        +params.get("page") === +children && "rounded-full bg-gray-300",
-        !+params.get("page") && +children === 1 && "rounded-full bg-gray-300"
+        "w-10 h-10 flex justify-center items-center",
+        "hover:rounded-full hover:bg-gray-300 transition-all",
+        currentPage === +children && "rounded-full bg-gray-300 font-bold", // Đánh dấu trang hiện tại
+        !Number(children) && "items-end pb-2 cursor-default text-gray-500" // Nút không hợp lệ
       )}
       onClick={handlePagination}
       type="button"
-      disabled={!Number(children)}
+      disabled={!Number(children)} // Vô hiệu hóa nút không hợp lệ
     >
       {children}
     </button>

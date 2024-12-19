@@ -4,6 +4,7 @@ import { NavLink, Link, useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { AiOutlineCaretDown, AiOutlineCaretRight } from "react-icons/ai";
 import { RiShareForwardLine } from "react-icons/ri";
+import { HiOutlineMenu, HiOutlineX } from "react-icons/hi"; // Thêm icon cho nút toggle
 import withBaseComponent from "hocs/withBaseComponent";
 import { useSelector } from "react-redux";
 import { adminSidebar } from "utils/contants";
@@ -15,6 +16,7 @@ const notActivedStyle = "px-4 py-2 flex items-center gap-2 hover:bg-blue-100";
 const AdminSidebar = () => {
   const navigate = useNavigate();
   const [actived, setActived] = useState([]);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true); // Trạng thái hiển thị Sidebar
   const { current } = useSelector((state) => state.user);
 
   const handleShowTabs = (tabID) => {
@@ -26,97 +28,114 @@ const AdminSidebar = () => {
   const renderSidebarItems = () => {
     if (!current) return [];
 
-
-    const role = +current.role; 
+    const role = +current.role;
     if (role === 1945) {
-
       return adminSidebar.filter((item) =>
         [
-          "Dashboard",
-          "Quản lý account",
+          "Tổng quát",
+          "Quản lý tài khoản",
           "Sản phẩm",
           "Quản lý đơn hàng",
           "Loại sản phẩm",
-          "Blogs",
+          "Bài viết",
         ].includes(item.text)
       );
     } else if (role === 1980) {
-
       return adminSidebar.filter((item) =>
-        ["Sản phẩm", "Quản lý orders", "Blogs"].includes(item.text)
+        ["Sản phẩm", "Quản lý đơn hàng", "Bài viết"].includes(item.text)
       );
     }
     return [];
   };
 
   return (
-    <div className="bg-white h-full py-4">
-      <Link
-        to={"/"}
-        className="flex flex-col justify-center items-center p-4 gap-2"
+    <div className="relative text-base">
+      {/* Nút ẩn/hiện Sidebar */}
+      <div
+        className="absolute top-4 left-4 z-50 cursor-pointer text-gray-700"
+        onClick={() => setIsSidebarVisible(!isSidebarVisible)}
       >
-        <img src={logo} alt="logo" className="w-[180px] object-contain" />
-        <strong className="text-[19px]">Workspace</strong>
-      </Link>
-      <div className="cursor-pointer">
-        {renderSidebarItems().map((el) => (
-          <Fragment key={el.id}>
-            {el.type === "SINGLE" && (
-              <NavLink
-                to={el.path}
-                className={({ isActive }) =>
-                  clsx(isActive && activedStyle, !isActive && notActivedStyle)
-                }
-              >
-                <span>{el.icon}</span>
-                <span>{el.text}</span>
-              </NavLink>
-            )}
-            {el.type === "PARENT" && (
-              <div
-                onClick={() => handleShowTabs(+el.id)}
-                className="flex flex-col"
-              >
-                <div className="flex items-center justify-between px-4 py-2 hover:bg-blue-100 cursor-pointer">
-                  <div className="flex items-center gap-2">
-                    <span>{el.icon}</span>
-                    <span>{el.text}</span>
+        {isSidebarVisible ? (
+          <HiOutlineX size={24} /> // Icon đóng
+        ) : (
+          <HiOutlineMenu size={24} /> // Icon mở
+        )}
+      </div>
+
+      {/* Sidebar */}
+      <div
+        className={clsx(
+          "bg-white h-full py-4 transition-transform duration-300",
+          isSidebarVisible ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        <Link
+          to={"/"}
+          className="flex flex-col justify-center items-center p-4 gap-2"
+        >
+          <img src={logo} alt="logo" className="w-[180px] object-contain" />
+          <div className="h-[50px]"></div>
+        </Link>
+        <div className="cursor-pointer">
+          {renderSidebarItems().map((el) => (
+            <Fragment key={el.id}>
+              {el.type === "SINGLE" && (
+                <NavLink
+                  to={el.path}
+                  className={({ isActive }) =>
+                    clsx(isActive && activedStyle, !isActive && notActivedStyle)
+                  }
+                >
+                  <span>{el.icon}</span>
+                  <span>{el.text}</span>
+                </NavLink>
+              )}
+              {el.type === "PARENT" && (
+                <div
+                  onClick={() => handleShowTabs(+el.id)}
+                  className="flex flex-col"
+                >
+                  <div className="flex items-center justify-between px-4 py-2 hover:bg-blue-100 cursor-pointer">
+                    <div className="flex items-center gap-2">
+                      <span>{el.icon}</span>
+                      <span>{el.text}</span>
+                    </div>
+                    {actived.some((id) => id === el.id) ? (
+                      <AiOutlineCaretRight />
+                    ) : (
+                      <AiOutlineCaretDown />
+                    )}
                   </div>
-                  {actived.some((id) => id === el.id) ? (
-                    <AiOutlineCaretRight />
-                  ) : (
-                    <AiOutlineCaretDown />
+                  {actived.some((id) => +id === +el.id) && (
+                    <div className="flex flex-col">
+                      {el.submenu.map((item, idx) => (
+                        <NavLink
+                          key={idx}
+                          to={item.path}
+                          onClick={(e) => e.stopPropagation()}
+                          className={({ isActive }) =>
+                            clsx(
+                              isActive && activedStyle,
+                              !isActive && notActivedStyle,
+                              "pl-16"
+                            )
+                          }
+                        >
+                          {item.text}
+                        </NavLink>
+                      ))}
+                    </div>
                   )}
                 </div>
-                {actived.some((id) => +id === +el.id) && (
-                  <div className="flex flex-col">
-                    {el.submenu.map((item, idx) => (
-                      <NavLink
-                        key={idx}
-                        to={item.path}
-                        onClick={(e) => e.stopPropagation()}
-                        className={({ isActive }) =>
-                          clsx(
-                            isActive && activedStyle,
-                            !isActive && notActivedStyle,
-                            "pl-16"
-                          )
-                        }
-                      >
-                        {item.text}
-                      </NavLink>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </Fragment>
-        ))}
-        <div onClick={() => navigate(`/`)} className={notActivedStyle}>
-          <span>
-            <RiShareForwardLine />
-          </span>
-          <span>Về trang chính</span>
+              )}
+            </Fragment>
+          ))}
+          <div onClick={() => navigate(`/`)} className={notActivedStyle}>
+            <span>
+              <RiShareForwardLine />
+            </span>
+            <span>Về trang chính</span>
+          </div>
         </div>
       </div>
     </div>

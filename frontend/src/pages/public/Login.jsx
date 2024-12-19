@@ -30,6 +30,7 @@ const Login = () => {
   const [isRegister, setIsRegister] = useState(false)
   const [isForgotPassword, setIsForgotPassword] = useState(false)
   const [searchParams] = useSearchParams()
+  const [showPassword, setShowPassword] = useState(false)
   const resetPayload = () => {
     setPayload({
       email: "",
@@ -50,9 +51,9 @@ const Login = () => {
   useEffect(() => {
     resetPayload()
   }, [isRegister])
-  // SUBMIT
   const handleSubmit = useCallback(async () => {
     const { firstname, lastname, mobile, ...data } = payload
+    const { password, confirmPassword} = payload
 
     const invalids = isRegister
       ? validate(payload, setInvalidFields)
@@ -60,6 +61,13 @@ const Login = () => {
     if (invalids === 0) {
       if (isRegister) {
         dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }))
+        if (password !== confirmPassword) {
+          setInvalidFields((prev) => [
+            ...prev,
+            { name: "confirmPassword", message: "Mật khẩu không khớp" },
+          ]);
+          return;
+        }
         const response = await apiRegister(payload)
         dispatch(showModal({ isShowModal: false, modalChildren: null }))
         if (response.success) {
@@ -78,7 +86,21 @@ const Login = () => {
           searchParams.get("redirect")
             ? navigate(searchParams.get("redirect"))
             : navigate(`/${path.HOME}`)
-        } else Swal.fire("Oops!", rs.mes, "error")
+        } else{
+        // Kiểm tra nếu tài khoản bị block (error code 403)
+          if (rs.mes === "Tài khoản của bạn đã bị chặn!") {
+            Swal.fire({
+              title: "Tài khoản bị chặn",
+              text: rs.mes,
+              icon: "error",
+              confirmButtonText: "OK",
+            }).then(() => {
+              navigate(`/${path.HOME}`);  // Quay về trang chủ sau khi nhấn OK
+            });
+          } else {
+            Swal.fire("Oops!", rs.mes, "error");
+          }
+        }
       }
     }
   }, [payload, isRegister])
@@ -86,7 +108,7 @@ const Login = () => {
   const finalRegister = async () => {
     const response = await apiFinalRegister(token)
     if (response.success) {
-      Swal.fire("Congratulation", response.mes, "success").then(() => {
+      Swal.fire("Đăng ký thành công", response.mes, "success").then(() => {
         setIsRegister(false)
         resetPayload()
       })
@@ -101,8 +123,8 @@ const Login = () => {
         <div className="absolute top-0 left-0 right-0 bottom-0 bg-overlay z-50 flex flex-col justify-center items-center">
           <div className="bg-white w-[90%] max-w-[500px] rounded-md p-8">
             <h4 className="mb-4">
-              We sent a code to your mail. Please check your mail and enter your
-              code:
+              Chúng tôi đã gửi mã đến email của bạn. Vui lòng kiểm tra email và
+              nhập mã của bạn:
             </h4>
             <input
               type="text"
@@ -115,7 +137,7 @@ const Login = () => {
               className="px-4 py-2 mt-4 mx-auto bg-blue-500 font-semibold text-white rounded-md ml-4"
               onClick={finalRegister}
             >
-              Submit
+              Đăng ký
             </button>
           </div>
         </div>
@@ -123,12 +145,12 @@ const Login = () => {
       {isForgotPassword && (
         <div className="absolute animate-slide-right top-0 left-0 bottom-0 right-0 bg-white flex flex-col items-center px-4 py-8 z-50">
           <div className="flex w-full flex-col gap-4">
-            <label htmlFor="email">Enter your email:</label>
+            <label htmlFor="email">Nhập email của bạn:</label>
             <input
               type="text"
               id="email"
               className="md:w-[800px] w-full pb-2 border-b outline-none placeholder:text-sm"
-              placeholder="Exp: email@gmail.com"
+              placeholder="email@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -138,13 +160,13 @@ const Login = () => {
                 handleOnClick={handleForgotPassword}
                 style="px-4 py-2 rounded-md text-white bg-blue-500 text-semibold my-2"
               >
-                Submit
+                Gửi mã
               </Button>
               <Button
                 name="Back"
                 handleOnClick={() => setIsForgotPassword(false)}
               >
-                Back
+                Quay về
               </Button>
             </div>
           </div>
@@ -158,7 +180,7 @@ const Login = () => {
       <div className="absolute top-0 bottom-0 left-0 right-0 items-center justify-center flex">
         <div className="p-8 bg-white flex flex-col items-center rounded-md md:min-w-[500px]">
           <h1 className="text-[28px] font-semibold text-main mb-8">
-            {isRegister ? "Register" : "Login"}
+            {isRegister ? "Đăng ký" : "Đăng nhập"}
           </h1>
           {isRegister && (
             <div className="flex items-center gap-2">
@@ -166,15 +188,19 @@ const Login = () => {
                 value={payload.firstname}
                 setValue={setPayload}
                 nameKey="firstname"
+                placeholder="Họ"
                 invalidFields={invalidFields}
                 setInvalidFieds={setInvalidFields}
+                isHideLabel={true}
               />
               <InputField
                 value={payload.lastname}
                 setValue={setPayload}
                 nameKey="lastname"
+                placeholder="Tên"
                 invalidFields={invalidFields}
                 setInvalidFieds={setInvalidFields}
+                isHideLabel={true}
               />
             </div>
           )}
@@ -182,8 +208,10 @@ const Login = () => {
             value={payload.email}
             setValue={setPayload}
             nameKey="email"
+            placeholder="Email"
             invalidFields={invalidFields}
             setInvalidFieds={setInvalidFields}
+            isHideLabel={true}
             fullWidth
           />
           {isRegister && (
@@ -191,22 +219,52 @@ const Login = () => {
               value={payload.mobile}
               setValue={setPayload}
               nameKey="mobile"
+              placeholder="Số điện thoại"
               invalidFields={invalidFields}
               setInvalidFieds={setInvalidFields}
+              isHideLabel={true}
               fullWidth
             />
           )}
-          <InputField
-            value={payload.password}
-            setValue={setPayload}
-            nameKey="password"
-            type="password"
-            invalidFields={invalidFields}
-            setInvalidFieds={setInvalidFields}
-            fullWidth
-          />
+          <div className="w-full relative flex flex-col gap-2">
+            <InputField
+              value={payload.password}
+              setValue={setPayload}
+              nameKey="password"
+              type={showPassword ? "text" : "password"}
+              invalidFields={invalidFields}
+              setInvalidFieds={setInvalidFields}
+              isHideLabel={true}
+              fullWidth
+              placeholder="Mật khẩu"
+            />
+            {isRegister && (
+              <InputField
+                value={payload.confirmPassword}
+                setValue={setPayload}
+                nameKey="confirmPassword"
+                type="password"
+                invalidFields={invalidFields}
+                setInvalidFieds={setInvalidFields}
+                isHideLabel={true}
+                fullWidth
+                placeholder="Xác nhận mật khẩu"
+              />
+            )}
+            <div className="flex items-center mt-2 ml-1">
+              <input
+                type="checkbox"
+                id="showPassword"
+                checked={showPassword}
+                onChange={() => setShowPassword((prev) => !prev)}
+                className="form-checkbox mr-2 w-5 h-5"
+              />
+              <label htmlFor="showPassword">Hiển thị mật khẩu</label>
+            </div>
+          </div>
+
           <Button handleOnClick={handleSubmit} fw>
-            {isRegister ? "Register" : "Login"}
+            {isRegister ? "Đăng ký" : "Đăng nhập"}
           </Button>
           <div className="flex items-center justify-between my-2 w-full text-sm">
             {!isRegister && (
@@ -214,7 +272,7 @@ const Login = () => {
                 onClick={() => setIsForgotPassword(true)}
                 className="text-blue-500 hover:underline cursor-pointer"
               >
-                Forgot your account?
+                Quên mật khẩu?
               </span>
             )}
             {!isRegister && (
@@ -222,7 +280,7 @@ const Login = () => {
                 className="text-blue-500 hover:underline cursor-pointer"
                 onClick={() => setIsRegister(true)}
               >
-                Create account
+                Chưa có tài khoản?
               </span>
             )}
             {isRegister && (
@@ -230,7 +288,7 @@ const Login = () => {
                 className="text-blue-500 hover:underline cursor-pointer w-full text-center"
                 onClick={() => setIsRegister(false)}
               >
-                Go login
+                Đăng nhập
               </span>
             )}
           </div>
@@ -238,7 +296,7 @@ const Login = () => {
             className="text-blue-500 text-sm hover:underline cursor-pointer"
             to={`/${path.HOME}`}
           >
-            Go home?
+            Trang chủ
           </Link>
         </div>
       </div>

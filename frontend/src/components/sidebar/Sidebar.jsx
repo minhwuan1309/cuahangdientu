@@ -6,22 +6,22 @@ import { useSelector } from "react-redux"
 const Sidebar = () => {
   const { categories } = useSelector((state) => state.app)
   return (
-    <div className="hidden md:flex flex-col border">
+    <div className="hidden md:flex flex-col border shadow-lg">
       {categories?.map((el) => (
         <NavLink
-          key={createSlug(el.title)}
-          to={createSlug(el.title)}
+          key={el.title}
+          to={`/${el.title}`} // Sử dụng trực tiếp tiêu đề
           className={({ isActive }) =>
             isActive
-              ? "bg-main text-white px-5 pt-[15px] pb-[14px] text-sm hover:text-main"
-              : "px-5 pt-[15px] pb-[14px] text-sm hover:text-main"
+              ? "bg-main text-white px-5 py-4 text-sm font-semibold hover:bg-main-light transition-all"
+              : "px-5 py-4 text-sm font-medium hover:text-main"
           }
         >
           {el.title}
         </NavLink>
       ))}
     </div>
-  )
+  );
 }
 
 export default memo(Sidebar)

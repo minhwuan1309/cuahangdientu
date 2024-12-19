@@ -58,12 +58,12 @@ const Home = ({ navigate }) => {
       </div>
       <div className="my-8 w-main m-auto">
         <h3 className="text-[20px] font-semibold py-[15px] border-b-2 border-main">
-          COLLECTIONS
+          LỰA CHỌN SẢN PHẨM THEO NHÃN HÀNG
         </h3>
         <div className="w-screen lg:hidden pr-4">
           {categories
             ?.filter((el) => el.brand.length > 0)
-            ?.slice(0, 6) 
+            ?.slice(0, 6)
             ?.map((el) => (
               <div key={el._id} className="col-span-1">
                 <div className="border w-full flex p-4 gap-4 min-h-[190px]">
@@ -73,8 +73,8 @@ const Home = ({ navigate }) => {
                     className="w-1/2 flex-1 h-[129px] object-cover"
                   />
                   <div className="w-1/2 flex-1 text-gray-700">
-                    <h4 className="font-semibold uppercase">{el.title}</h4>
-                    <ul className="text-sm">
+                    <h4 className="font-semibold uppercase ">{el.title}</h4>
+                    <ul className="">
                       {el?.brand?.map((item) => (
                         <span
                           key={item}
@@ -101,7 +101,7 @@ const Home = ({ navigate }) => {
         <div className="lg:grid hidden lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 mt-4">
           {categories
             ?.filter((el) => el.brand.length > 0)
-            ?.slice(0, 6) 
+            ?.slice(0, 9)
             ?.map((el) => (
               <div key={el._id} className="col-span-1">
                 <div className="border w-full flex p-4 gap-4 min-h-[190px]">
@@ -112,7 +112,7 @@ const Home = ({ navigate }) => {
                   />
                   <div className="w-1/2 flex-1 text-gray-700">
                     <h4 className="font-semibold uppercase">{el.title}</h4>
-                    <ul className="text-sm">
+                    <ul className="text-base">
                       {el?.brand?.map((item) => (
                         <span
                           key={item}

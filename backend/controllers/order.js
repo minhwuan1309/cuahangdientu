@@ -4,7 +4,6 @@ const User = require("../models/user");
 const Coupon = require("../models/coupon");
 const nodemailer = require("nodemailer");
 const asyncHandler = require("express-async-handler");
-const user = require("../models/user");
 const order = require("../models/order");
 const coupon = require("../models/coupon");
 const Product = require("../models/product");
@@ -21,12 +20,15 @@ const createOrder = asyncHandler(async (req, res) => {
 
   const newOrder = await Order.create(orderData)
   if (!newOrder) throw new Error("Tạo đơn hàng thất bại")
+    await User.findByIdAndUpdate(_id, {
+      $push: { orderHistory: newOrder._id },
+    });
 
   try {
     for (const item of products) {
       const updatedProduct = await Product.findByIdAndUpdate(
         item.product,
-        { $inc: { quantity: -item.quantity } },
+        { $inc: { quantity: -item.quantity, sold: item.quantity } },
         { new: true }
       )
 
@@ -74,8 +76,9 @@ const getUserOrders = asyncHandler(async (req, res) => {
     (macthedEl) => `$${macthedEl}`
   );
   const formatedQueries = JSON.parse(queryString);
+  // Truy vấn các đơn hàng của người dùng theo orderBy (_id)
   const qr = { ...formatedQueries, orderBy: _id };
-  console.log(qr);
+
   let queryCommand = Order.find(qr);
 
   // Sorting
@@ -95,17 +98,37 @@ const getUserOrders = asyncHandler(async (req, res) => {
   const limit = +req.query.limit || process.env.LIMIT_PRODUCTS;
   const skip = (page - 1) * limit;
   queryCommand.skip(skip).limit(limit);
-  // Execute query
-  // Số lượng sp thỏa mãn điều kiện !== số lượng sp trả về 1 lần gọi API
-  queryCommand.exec(async (err, response) => {
-    if (err) throw new Error(err.message);
+  
+  try {
+    // Lấy danh sách đơn hàng của người dùng
+    const response = await queryCommand;
+
+    // Kiểm tra các đơn hàng hợp lệ
+    const validOrders = await Promise.all(
+      response.map(async (order) => {
+        const orderExists = await Order.findById(order._id);
+        return orderExists ? order : null; // Chỉ giữ lại đơn hàng hợp lệ
+      })
+    );
+
+    // Lọc bỏ các đơn hàng không hợp lệ
+    const filteredOrders = validOrders.filter((order) => order !== null);
+
+    // Trả về kết quả
     const counts = await Order.find(qr).countDocuments();
     return res.status(200).json({
-      success: response ? true : false,
+      success: filteredOrders.length > 0,
       counts,
-      orders: response ? response : "Không thể lấy danh sách sản phẩm",
+      orders:
+        filteredOrders.length > 0 ? filteredOrders : "Không có đơn hàng hợp lệ",
     });
-  });
+  } catch (error) {
+    console.error("Lỗi trong quá trình xử lý đơn hàng:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi lấy danh sách đơn hàng",
+    });
+  }
 });
 const getOrders = asyncHandler(async (req, res) => {
   const queries = { ...req.query };
@@ -155,6 +178,11 @@ const getOrders = asyncHandler(async (req, res) => {
 const deleteOrderByAdmin = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const rs = await Order.findByIdAndDelete(id);
+  await User.findByIdAndUpdate(
+    req.user._id,
+    { $pull: { orderHistory: id } },
+    { new: true }
+  );
   return res.json({
     success: rs ? true : false,
     mes: rs ? "Đã xoá đơn hàng" : "Đã xảy ra lỗi",
@@ -194,7 +222,7 @@ const getDashboard = asyncHandler(async (req, res) => {
             $and: [
               { createdAt: { $gte: new Date(start) } },
               { createdAt: { $lte: new Date(end) } },
-              { status: "Đã thanh toán" },
+              { status: "Succeed" },
             ],
           },
         },
@@ -211,7 +239,7 @@ const getDashboard = asyncHandler(async (req, res) => {
             $and: [
               { createdAt: { $gte: new Date(start) } },
               { createdAt: { $lte: new Date(end) } },
-              { status: "Chưa thanh toán" },
+              { status: "Pending" },
             ],
           },
         },
@@ -228,7 +256,7 @@ const getDashboard = asyncHandler(async (req, res) => {
             $and: [
               { createdAt: { $gte: new Date(start) } },
               { createdAt: { $lte: new Date(end) } },
-              { status: "Đã thanh toán" },
+              { status: "Succeed" },
             ],
           },
         },
@@ -245,7 +273,7 @@ const getDashboard = asyncHandler(async (req, res) => {
             $and: [
               { createdAt: { $gte: new Date(start) } },
               { createdAt: { $lte: new Date(end) } },
-              { status: "Đã thanh toán" },
+              { status: "Succeed" },
             ],
           },
         },

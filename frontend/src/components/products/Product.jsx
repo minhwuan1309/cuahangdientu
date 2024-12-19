@@ -87,9 +87,13 @@ const Product = ({
     }
   }
   return (
-    <div className={clsx("w-full col-span-1 text-base px-[10px]", className)}>
+    <div
+      className="relative w-full max-w-sm rounded-lg shadow-lg overflow-hidden transition-all duration-300 transform hover:shadow-xl hover:bg-gray-200"
+      onMouseEnter={() => setIsShowOption(true)}
+      onMouseLeave={() => setIsShowOption(false)}
+    >
       <div
-        className="w-full border p-[15px] flex flex-col items-center cursor-pointer"
+        className="w-full border p-[15px] flex flex-col items-center rounded-lg overflow-hidden hover:scale-105 cursor-pointer"
         onClick={(e) =>
           navigate(
             `/${productData?.category?.toLowerCase()}/${productData?._id}/${
@@ -164,15 +168,15 @@ const Product = ({
           )}
         </div>
         <div className="flex flex-col mt-[15px] items-start gap-1 w-full">
-          <span className="flex h-4">
+          <span className="line-clamp-1">{productData?.title}</span>
+          <span>{`${formatMoney(productData?.price)} VNĐ`}</span>
+          <span className="flex h-4 items-center">
             {renderStarFromNumber(productData?.totalRatings)?.map(
               (el, index) => (
                 <span key={index}>{el}</span>
               )
             )}
           </span>
-          <span className="line-clamp-1">{productData?.title}</span>
-          <span>{`${formatMoney(productData?.price)} VNĐ`}</span>
         </div>
       </div>
     </div>

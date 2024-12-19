@@ -72,8 +72,8 @@ const ManageOrder = () => {
 
   const handleDeleteProduct = (id) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "Are you sure remove this order",
+      title: "Bạn có chắc không?",
+      text: "Bạn có muốn xoá đơn hàng này không?",
       icon: "warning",
       showCancelButton: true,
     }).then(async (rs) => {
@@ -107,16 +107,16 @@ const ManageOrder = () => {
     <div className="w-full flex flex-col gap-4 bg-gray-50 relative">
       <div className="h-[69px] w-full"></div>
       <div className="p-4 border-b w-full bg-gray-50 flex items-center fixed top-0">
-        <h1 className="text-3xl font-bold tracking-tight">Manage orders</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Quản lý đơn hàng</h1>
         {editOrder && (
           <>
             <Button
               handleOnClick={handleUpdate}
               style="bg-blue-500 text-white px-4 py-2 rounded-md mx-6"
             >
-              Update
+              Cập nhật
             </Button>
-            <Button handleOnClick={() => setEditOrder(null)}>Cancel</Button>
+            <Button handleOnClick={() => setEditOrder(null)}>Quay lại</Button>
           </>
         )}
       </div>
@@ -130,21 +130,21 @@ const ManageOrder = () => {
         />
         <table className="table-auto w-full px-4">
           <thead>
-            <tr className="border bg-sky-900 text-white border-white">
+            <tr className="font-bold bg-gray-700 text-[13px] text-white">
               <th className="text-center py-2">#</th>
-              <th className="text-center py-2">Ordered By</th>
-              <th className="text-center py-2">Products</th>
-              <th className="text-center py-2">Total</th>
-              <th className="text-center py-2">Payment Methods</th>
-              <th className="text-center py-2">Status</th>
-              <th className="text-center py-2">Ordered Date</th>
-              <th className="text-center py-2">Actions</th>
+              <th className="text-center py-2">Khách hàng</th>
+              <th className="text-center py-2">Các sản phảm</th>
+              <th className="text-center py-2">Tổng tiền</th>
+              <th className="text-center py-2">Phương thức thanh toán</th>
+              <th className="text-center py-2">Trạng thái thanh toán</th>
+              <th className="text-center py-2">Ngày mua hàng</th>
+              <th className="text-center py-2">Thao tác</th>
             </tr>
           </thead>
           <tbody>
             {filteredOrders?.map((el, idx) => (
               <tr
-                className="border-b hover:bg-gray-50 transition duration-150"
+                className="border border-gray-500 hover:bg-gray-50 transition duration-150 "
                 key={el._id}
               >
                 <td className="text-center py-2 px-2">
@@ -153,11 +153,11 @@ const ManageOrder = () => {
                     idx +
                     1}
                 </td>
-                <td className="text-center py-2 px-2 font-medium text-sm">
+                <td className="text-center py-2 px-2 font-medium text-sm ">
                   {el.orderBy?.firstname + " " + el.orderBy?.lastname}
                 </td>
-                <td className="text-center py-2 px-2">
-                  <div className="max-w-sm flex flex-col gap-3">
+                <td className="text-center py-2 px-2 ">
+                  <div className="max-w-sm flex flex-col gap-3 ">
                     {el.products?.map((n) => (
                       <div
                         key={n._id}
@@ -174,19 +174,18 @@ const ManageOrder = () => {
                     ))}
                   </div>
                 </td>
-                <td className="text-center py-2 px-1 text-green-500 font-semibold">
+                <td className="text-center py-2  text-green-500 font-semibold">
                   {`${formatMoney(el.total * 25000)} VNĐ`}
                 </td>
-                <td className="py-3 px-2 text-center">{el.paymentMethod}</td>
-                <td className="text-center py-2">
+                <td className="py-3 px-1 text-center ">{el.paymentMethod}</td>
+                <td className="text-center py-2 ">
                   {editOrder?._id === el._id ? (
                     <select {...register("status")} className="form-select">
                       <option value="Cancelled">Đơn hàng bị huỷ</option>
                       <option value="Succeed">Đã thanh toán</option>
                       <option value="Pending">Chưa thanh toán</option>
                     </select>
-                  ) : // Chuyển đổi giá trị status trước khi hiển thị
-                  el.status === "Cancelled" ? (
+                  ) : el.status === "Cancelled" ? (
                     "Đơn hàng bị huỷ"
                   ) : el.status === "Succeed" ? (
                     "Đã thanh toán"
@@ -194,14 +193,13 @@ const ManageOrder = () => {
                     "Chưa thanh toán"
                   ) : (
                     el.status
-                  ) // Nếu không phải các giá trị trên thì giữ nguyên
-                  }
+                  )}
                 </td>
-                <td className="flex flex-col items-center text-center py-11">
+                <td className="flex flex-col items-center text-center py-11 ">
                   <span>{moment(el.createdAt).format("DD/MM/YYYY")}</span>
                   <span>{moment(el.updatedAt).format("HH:mm:ss")}</span>
                 </td>
-                <td className="text-center py-2">
+                <td className="text-center py-2 ">
                   <span
                     onClick={() => {
                       setEditOrder(el);

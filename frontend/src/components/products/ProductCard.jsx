@@ -22,8 +22,8 @@ const ProductCard = ({
           alt="products"
           className="w-[120px] object-contain p-4"
         />
-        <div className="flex flex-col mt-[15px] items-start gap-1 w-full text-xs">
-          <span className="line-clamp-1 capitalize text-sm">
+        <div className="flex flex-col mt-[15px] items-start gap-1 w-full text-base">
+          <span className="line-clamp-1 capitalize">
             {title?.toLowerCase()}
           </span>
           <span className="flex h-4">
@@ -35,7 +35,7 @@ const ProductCard = ({
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default withBaseComponent(memo(ProductCard))

@@ -33,15 +33,22 @@ const ManageProducts = () => {
   const [customizeVarriant, setCustomizeVarriant] = useState(null)
   const [sortColumn, setSortColumn] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
+  const [searchTerm, setSearchTerm] = useState("");
+
 
   const render = useCallback(() => {
     setUpdate(!update)
   })
+  const filteredProducts = searchTerm
+    ? products?.filter((item) =>
+        item.title.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : products;
 
   const fetchProducts = async (params) => {
     const response = await apiGetProducts({
       ...params,
-      limit: process.env.REACT_APP_LIMIT,
+      limit: 8,
     })
     if (response.success) {
       setCounts(response.counts)
@@ -108,6 +115,25 @@ const ManageProducts = () => {
   };
 
 
+  const handleSearchChange = (event) => {
+    const value = event.target.value;
+    setSearchTerm(value);
+
+    if (value.trim() === "") {
+      // Nếu input trống, reset query
+      navigate({
+        pathname: location.pathname,
+      });
+    } else {
+      // Nếu có từ khóa, thêm `q` vào URL
+      navigate({
+        pathname: location.pathname,
+        search: createSearchParams({ q: value }).toString(),
+      });
+    }
+  };
+
+
 
   return (
     <div className="w-full flex flex-col gap-4 relative">
@@ -133,21 +159,20 @@ const ManageProducts = () => {
       <div className="p-4 border-b w-full bg-gray-100 flex justify-between items-center fixed top-0">
         <h1 className="text-3xl font-bold tracking-tight">Quản lý sản phẩm</h1>
       </div>
-      <div className="flex justify-end items-center px-4">
-        <form className="w-[45%]">
-          <InputForm
-            id="q"
-            register={register}
-            errors={errors}
-            fullWidth
-            placeholder="Tìm sản phẩm..."
-          />
-        </form>
-      </div>
-      <div className="px-4 mt-20 w-full">
+
+      <div className="px-4 mt-6 w-full">
+        <div className="flex justify-end items-center px-4">
+            <input
+              type="text"
+              placeholder="Tìm kiếm theo tên sản phẩm..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="w-[50%] mb-4 border border-gray-500 rounded-md focus:ring-blue-500 focus:outline-none py-4 px-4 shadow-sm text-base"
+            />
+        </div>
         <table className="table-auto w-full border-collapse border border-gray-300 text-gray-700 bg-white rounded-md shadow">
           <thead>
-            <tr className="bg-sky-800 text-white border-b border-gray-300">
+            <tr className="font-bold bg-gray-700 text-[15px] text-white">
               <th className="text-center py-3 px-2">STT</th>
               <th className="text-center py-3 px-2">Ảnh</th>
               <th

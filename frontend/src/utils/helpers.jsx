@@ -10,13 +10,24 @@ export const calculateTotal = (products) => {
   }, 0);
 };
 
-export const createSlug = (string) =>
-  string
+export const createSlug = (string) => {
+  return string
     .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .split(" ")
-    .join("-")
+    .normalize("NFD") // Chuẩn hóa ký tự Unicode
+    .replace(/[\u0300-\u036f]/g, "") // Loại bỏ dấu tiếng Việt
+    .replace(/đ/g, "d") // Chuyển đổi ký tự "đ"
+    .replace(/[^a-z0-9\s-]/g, "") // Loại bỏ ký tự không hợp lệ
+    .replace(/\s+/g, "-") // Thay khoảng trắng bằng dấu gạch ngang
+    .replace(/-+/g, "-") // Xóa dấu gạch ngang dư thừa
+    .trim(); // Loại bỏ khoảng trắng đầu và cuối
+};
+
+export const slugToTitleMap = {
+  "dien-thoai": "Điện thoại",
+  "tai-nghe": "Tai nghe",
+  "may-tinh-bang": "Máy tính bảng",
+  "dong-ho-thong-minh": "Đồng hồ thông minh"
+};
 
 export const formatMoney = (number) =>
   Number(number?.toFixed(1)).toLocaleString()

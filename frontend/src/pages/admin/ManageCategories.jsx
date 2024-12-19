@@ -94,13 +94,13 @@ const ManageCategory = () => {
       )}
       <div className="flex justify-between items-center border-b pb-4">
         <h1 className="text-3xl font-semibold text-gray-700">
-          Quản lý Categories
+          Quản lý loại sản phẩm
         </h1>
       </div>
       <div className="px-4 mt-20 w-full">
         <table className="table-auto w-full border-collapse border border-gray-300 text-gray-700 bg-white rounded-md shadow">
           <thead>
-            <tr className="bg-sky-800 text-white border-b border-gray-300">
+            <tr className="font-bold bg-gray-700 text-[13px] text-white">
               <th className="text-center py-3 px-2">STT</th>
               <th className="text-center py-3 px-2">Ảnh</th>
               <th className="text-center py-3 px-2">Tên danh mục</th>
@@ -120,12 +120,12 @@ const ManageCategory = () => {
                     key={category._id}
                   >
                     <td className="text-center py-3 px-2">
-                      {/* Tính STT không thay đổi */}
                       {(+params.get("page") > 1 ? +params.get("page") - 1 : 0) *
                         process.env.REACT_APP_LIMIT +
                         idx +
                         1}
                     </td>
+
                     <td className="text-center py-3 px-2">
                       <img
                         src={category.image}
@@ -165,11 +165,6 @@ const ManageCategory = () => {
             )}
           </tbody>
         </table>
-      </div>
-
-      {/* Pagination */}
-      <div className="w-full px-4 flex justify-end my-8">
-        <Pagination totalCount={counts} />
       </div>
     </div>
   );

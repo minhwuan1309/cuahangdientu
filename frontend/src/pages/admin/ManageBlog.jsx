@@ -65,7 +65,7 @@ const ManageBlog = ({ dispatch }) => {
     <div className="w-full flex flex-col gap-4 min-h-screen bg-gray-50 relative">
       <div className="h-[69px] w-full"></div>
       <div className="p-4 border-b w-full bg-gray-50 flex items-center fixed top-0">
-        <h1 className="text-3xl font-bold tracking-tight">Quản lý Blogs</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Quản lý bài viết</h1>
       </div>
       <div className="flex justify-end items-center px-4">
         <form className="w-[45%]">
@@ -81,7 +81,7 @@ const ManageBlog = ({ dispatch }) => {
       <div className="px-4 mt-20 w-full">
         <table className="table-auto w-full border-collapse border border-gray-300 text-gray-700 bg-white rounded-md shadow">
           <thead>
-            <tr className="bg-sky-800 text-white border-b border-gray-300">
+            <tr className="font-bold bg-gray-700 text-[13px] text-white">
               <th className="text-center py-3 px-2">STT</th>
               <th className="text-center py-3 px-2">Tiêu đề</th>
               <th className="text-center py-3 px-2">Hashtags</th>

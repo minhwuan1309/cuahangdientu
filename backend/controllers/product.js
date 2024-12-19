@@ -20,7 +20,7 @@ const createProduct = asyncHandler(async (req, res) => {
   
   return res.status(200).json({
     success: newProduct ? true : false,
-    mes: newProduct ? "Created" : "Failed.",
+    mes: newProduct ? "Đã tạo sản phẩm" : "Thất bại.",
   });
 });
 const getProduct = asyncHandler(async (req, res) => {

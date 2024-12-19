@@ -135,12 +135,12 @@ const handleClickImage = (el) => {
   const handleAddToCart = async () => {
     if (!current)
       return Swal.fire({
-        title: "Almost...",
-        text: "Please login first!",
+        title: "Oops...",
+        text: "Đăng nhập để mua hàng nhé!",
         icon: "info",
-        cancelButtonText: "Not now!",
+        cancelButtonText: "Để sau!",
         showCancelButton: true,
-        confirmButtonText: "Go login page",
+        confirmButtonText: "Đi đăng nhập hoy",
       }).then(async (rs) => {
         if (rs.isConfirmed)
           navigate({
@@ -173,8 +173,8 @@ const handleClickImage = (el) => {
               {currentProduct.title || product?.title}
             </h3>
             <Breadcrumb
-              title={currentProduct.title || product?.title}
-              category={category}
+              title={currentProduct.title || product?.title} // Truyền tiêu đề sản phẩm
+              category={params.category || product?.category} // Truyền danh mục sản phẩm
             />
           </div>
         </div>
@@ -241,14 +241,14 @@ const handleClickImage = (el) => {
                 fotmatPrice(currentProduct.price || product?.price)
               )} VNĐ`}
             </h2>
-            <span className="text-sm text-main">{`In stock: ${product?.quantity}`}</span>
+            <span className="text-m text-main">{`Có sẵn: ${product?.quantity}`}</span>
           </div>
 
           <div className="flex items-center gap-1">
             {renderStarFromNumber(product?.totalRatings)?.map((el, index) => (
               <span key={index}>{el}</span>
             ))}
-            <span className="text-sm text-gray-500 italic">{`(Sold: ${product?.sold} pieces)`}</span>
+            <span className="text-sm text-gray-500 italic">{`(Đã bán: ${product?.sold})`}</span>
           </div>
 
           <ul className="list-disc text-sm text-gray-600 pl-4 max-h-[300px] overflow-y-auto">
@@ -290,8 +290,6 @@ const handleClickImage = (el) => {
                   </span>
                 </span>
               </div>
-
-              {/* Màu sắc khác */}
               {product?.varriants?.map((el) => (
                 <div
                   key={el.sku}
@@ -316,7 +314,7 @@ const handleClickImage = (el) => {
           </div>
 
           {/* Số lượng và thêm vào giỏ hàng */}
-          {current?.role !== 1945 && (
+          {+current?.role !== 1945 && (
             <div className="flex flex-col gap-8">
               <div className="flex items-center gap-4">
                 <span className="font-semibold text-gray-700">Số lượng:</span>

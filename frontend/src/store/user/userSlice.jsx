@@ -52,7 +52,7 @@ export const userSlice = createSlice({
             state.current = null;
             state.isLoggedIn = false
             state.token = null
-            state.mes = 'Login session has expired. Please login again!'
+            state.mes = 'Phiên đăng nhập đã hết hạn. Hãy đăng nhập lại'
         });
     }
 })

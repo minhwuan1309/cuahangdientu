@@ -35,7 +35,7 @@ const CreateProducts = () => {
     const imagesPreview = [];
     for (let file of files) {
       if (file.type !== "image/png" && file.type !== "image/jpeg") {
-        toast.warning("File not supported!");
+        toast.warning("Tệp không được hỗ trợ");
         return;
       }
       const base64 = await getBase64(file);
@@ -86,57 +86,57 @@ const CreateProducts = () => {
       <div className="p-4">
         <form onSubmit={handleSubmit(handleCreateProduct)}>
           <InputForm
-            label="Name product"
+            label="Tên sản phẩm"
             register={register}
             errors={errors}
             id="title"
             validate={{
-              required: "Need fill this field",
+              required: "Không được để trống",
             }}
             fullWidth
-            placeholder="Name of new product"
+            placeholder="Tên sản phẩm"
           />
           <div className="w-full my-6 flex gap-4">
             <InputForm
-              label="Price"
+              label="Giá"
               register={register}
               errors={errors}
               id="price"
               validate={{
-                required: "Need fill this field",
+                required: "Không được để trống",
               }}
               style="flex-auto"
-              placeholder="Price of new product"
+              placeholder="Giá tiền sản phẩm"
               type="number"
             />
             <InputForm
-              label="Quantity"
+              label="Số lượng"
               register={register}
               errors={errors}
               id="quantity"
               validate={{
-                required: "Need fill this field",
+                required: "Không được để trống",
               }}
               style="flex-auto"
-              placeholder="Quantity of new product"
+              placeholder="Số lượng sản phẩm"
               type="number"
             />
             <InputForm
-              label="Color"
+              label="Màu sắc"
               register={register}
               errors={errors}
               id="color"
               validate={{
-                required: "Need fill this field",
+                required: "Không được để trống",
               }}
               style="flex-auto"
-              placeholder="color of new product"
+              placeholder="đen,xám,trắng,..."
             />
           </div>
           <div className="w-full my-6 flex gap-4">
             {/* Category Select */}
             <Select
-              label="Category"
+              label="Loại sản phẩm"
               options={categories
                 ?.slice() // Tạo một bản sao của mảng
                 ?.sort((a, b) => a.title.localeCompare(b.title)) // Sort categories alphabetically
@@ -146,7 +146,7 @@ const CreateProducts = () => {
                 }))}
               register={register}
               id="category"
-              validate={{ required: "Need fill this field" }}
+              validate={{ required: "Không được để trống" }}
               style="flex-auto"
               errors={errors}
               fullWidth
@@ -154,7 +154,7 @@ const CreateProducts = () => {
 
             {/* Brand Select */}
             <Select
-              label="Brand (Optional)"
+              label="Thương hiệu"
               options={categories
                 ?.find((el) => el._id === watch("category"))
                 ?.brand?.slice() // Tạo một bản sao của mảng
@@ -167,17 +167,17 @@ const CreateProducts = () => {
               fullWidth
             />
           </div>
-                
+
           <MarkdownEditor
             name="description"
             changeValue={changeValue}
-            label="Description"
+            label="Mô tả"
             invalidFields={invalidFields}
             setInvalidFields={setInvalidFields}
           />
           <div className="flex flex-col gap-2 mt-8">
             <label className="font-semibold" htmlFor="thumb">
-              Upload thumb
+              Ảnh đại diện của sản phẩm
             </label>
             <input
               type="file"
@@ -201,7 +201,7 @@ const CreateProducts = () => {
           )}
           <div className="flex flex-col gap-2 mt-8">
             <label className="font-semibold" htmlFor="products">
-              Upload images of product
+              Hình ảnh khác
             </label>
             <input
               type="file"
@@ -229,7 +229,7 @@ const CreateProducts = () => {
             </div>
           )}
           <div className="my-6">
-            <Button type="submit">Create new product</Button>
+            <Button type="submit">Tạo sản phẩm mới</Button>
           </div>
         </form>
       </div>

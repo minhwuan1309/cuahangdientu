@@ -40,6 +40,7 @@
     "redux-persist": "^6.0.0",
     "slick-carousel": "^1.8.1",
     "sweetalert2": "^11.7.3",
+    "tailwindcss-pseudo-elements": "^2.0.0",
     "use-react-router-breadcrumbs": "^4.0.1",
     "web-vitals": "^2.1.4",
     "yup": "^1.4.0"

@@ -6,6 +6,8 @@ import { AiOutlineUserAdd } from "react-icons/ai"
 import { formatMoney } from "utils/helpers"
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js"
 import { Pie } from "react-chartjs-2"
+import moment from "moment";
+
 ChartJS.register(ArcElement, Tooltip, Legend)
 const Dashboard = () => {
   const [data, setData] = useState()
@@ -19,17 +21,21 @@ const Dashboard = () => {
     if (response.success) setData(response.data)
   }
   useEffect(() => {
-    const type = isMonth ? "MTH" : "D"
-    const params = { type }
-    if (customTime.from) params.from = customTime.from
-    if (customTime.to) params.to = customTime.to
-    fetchDataDashboard(params)
-  }, [isMonth, customTime])
+    const type = isMonth ? "MTH" : "D";
+    const params = { type };
+
+    if (customTime.from)
+      params.from = moment(customTime.from, "DD/MM/YYYY").format("YYYY-MM-DD");
+    if (customTime.to)
+      params.to = moment(customTime.to, "DD/MM/YYYY").format("YYYY-MM-DD");
+
+    fetchDataDashboard(params);
+  }, [isMonth, customTime]);
   const handleCustomTime = () => {
     setCustomTime({ from: "", to: "" })
   }
   const pieData = {
-    labels: ["Tông đơn đã hủy", "Tổng đơn thành công"],
+    labels: ["Tổng đơn đã hủy", "Tổng đơn thành công"],
     datasets: [
       {
         label: "Tổng đơn",
@@ -47,31 +53,31 @@ const Dashboard = () => {
     <div className="w-full flex flex-col gap-4 bg-gray-50 relative">
       <div className="h-[69px] w-full"></div>
       <div className="p-4 border-b w-full bg-gray-50 flex items-center fixed top-0">
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Tổng quát</h1>
       </div>
       <div className="px-4">
         <div className="grid grid-cols-4 gap-4">
           <BoxInfo
             text="Số thành viên mới"
             icon={<AiOutlineUserAdd size={22} />}
-            number={data?.users[0]?.count}
+            number={data?.users?.[0]?.count || 0}
             className="border-blue-500 text-white bg-blue-500"
           />
           <BoxInfo
             text="Số tiền đã được thanh toán"
             icon={<img src="/dong.svg" className="h-6 object-contain" />}
             number={
-              data?.totalSuccess?.length > 0
+              data?.totalSuccess?.[0]?.count
                 ? formatMoney(Math.round(data?.totalSuccess[0]?.count * 25000))
                 : 0
-            }
+            }a
             className="border-green-500 text-white bg-green-500"
           />
           <BoxInfo
             text="Số tiền chưa thanh toán"
             icon={<img src="/dong.svg" className="h-6 object-contain" />}
             number={
-              data?.totalFailed?.length > 0
+              data?.totalFailed?.[0]?.count
                 ? formatMoney(Math.round(data?.totalFailed[0]?.count * 25000))
                 : 0
             }
@@ -79,12 +85,7 @@ const Dashboard = () => {
           />
           <BoxInfo
             text="Số sản phẩm đã bán"
-            // icon={<img src="/dong.svg" className="h-6 object-contain" />}
-            number={
-              data?.soldQuantities?.length > 0
-                ? data?.soldQuantities[0]?.count
-                : 0
-            }
+            number={data?.soldQuantities?.[0]?.count || 0}
             className="border-yellow-500 text-white bg-yellow-500"
           />
         </div>
@@ -129,7 +130,7 @@ const Dashboard = () => {
                     className={`px-4 py-2 rounded-md border-blue-500 text-blue-500 border`}
                     onClick={handleCustomTime}
                   >
-                    Default
+                    Mặc định
                   </button>
                 </div>
               </span>
@@ -173,7 +174,7 @@ const Dashboard = () => {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default Dashboard
