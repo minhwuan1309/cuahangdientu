@@ -371,7 +371,7 @@ const sendOrderConfirmationEmail = async (userEmail, orderDetails) => {
                     product.quantity
                   }</td>
                   <td style="border: 1px solid #ddd; padding: 8px;">${formatMoney(
-                    product.price
+                    product.price*product.quantity
                   )} VNĐ</td>
                 </tr>
               `

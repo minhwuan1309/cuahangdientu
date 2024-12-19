@@ -70,13 +70,13 @@ const ManageUser = () => {
           <span>Quản lý tài khoản</span>
         </h1>
         <div className="w-full p-4">
-          <div className="flex justify-end py-4">
+          <div className="flex justify-end py-4 border-gray-300">
             <InputField
               nameKey={"q"}
               value={queries.q}
               setValue={setQueries}
               style={"w500"}
-              placeholder="Search name or mail user..."
+              placeholder="Tìm kiếm tài khoản..."
               isHideLabel
             />
           </div>

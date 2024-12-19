@@ -98,7 +98,7 @@ const Checkout = ({ dispatch, navigate }) => {
                     <td className="p-3">{el.title}</td>
                     <td className="p-3 text-center">{el.quantity}</td>
                     <td className="p-3 text-right">
-                      {formatMoney(el.price) + " VND"}
+                      {formatMoney(el.price * el.quantity) +" VNĐ"}
                     </td>
                   </tr>
                 ))}
@@ -148,7 +148,7 @@ const Checkout = ({ dispatch, navigate }) => {
                       ) / 25000
                     ),
                     address: current?.address,
-                    paymentMethod
+                    paymentMethod,
                   }}
                   setIsSuccess={setIsSuccess}
                   amount={Math.round(
