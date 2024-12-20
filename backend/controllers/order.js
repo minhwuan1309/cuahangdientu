@@ -135,6 +135,7 @@ const getOrders = asyncHandler(async (req, res) => {
   // Tách các trường đặc biệt ra khỏi query
   const excludeFields = ["limit", "sort", "page", "fields"];
   excludeFields.forEach((el) => delete queries[el]);
+  
 
   // Format lại các operators cho đúng cú pháp mongoose
   let queryString = JSON.stringify(queries);
@@ -144,7 +145,11 @@ const getOrders = asyncHandler(async (req, res) => {
   );
   const formatedQueries = JSON.parse(queryString);
   const qr = { ...formatedQueries };
-  let queryCommand = Order.find(qr).populate("orderBy", "firstname lastname");
+  let queryCommand = Order.find(qr).populate(
+    "orderBy",
+    "firstname lastname email mobile address"
+  );
+
 
   // Sorting
   if (req.query.sort) {

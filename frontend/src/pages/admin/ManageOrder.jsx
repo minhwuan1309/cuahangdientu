@@ -1,7 +1,6 @@
 import {
   apiDeleteOrderByAdmin,
   apiGetOrders,
-  apiUpdateCart,
   apiUpdateStatus,
 } from "apis";
 import { Button, InputForm, Pagination } from "components";
@@ -10,13 +9,14 @@ import moment from "moment";
 import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiCustomize, BiEdit } from "react-icons/bi";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import { RiCloseFill, RiDeleteBin6Line } from "react-icons/ri";
 import {
   createSearchParams,
   useLocation,
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
+
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { formatMoney } from "utils/helpers";
@@ -36,6 +36,8 @@ const ManageOrder = () => {
   const [update, setUpdate] = useState(false);
   const [editOrder, setEditOrder] = useState();
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
 
   const fetchOrders = async (params) => {
     const response = await apiGetOrders({
@@ -102,6 +104,9 @@ const ManageOrder = () => {
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
+  const closePopup = () => setSelectedOrder(null)
+  
+  const closeCustomerPopup = () => setSelectedCustomer(null);
 
   return (
     <div className="w-full flex flex-col gap-4 bg-gray-50 relative">
@@ -133,7 +138,7 @@ const ManageOrder = () => {
             <tr className="font-bold bg-gray-700 text-[13px] text-white">
               <th className="text-center py-2">#</th>
               <th className="text-center py-2">Khách hàng</th>
-              <th className="text-center py-2">Các sản phảm</th>
+              <th className="text-center py-2">Số lượng sản phẩm</th>
               <th className="text-center py-2">Tổng tiền</th>
               <th className="text-center py-2">Phương thức thanh toán</th>
               <th className="text-center py-2">Trạng thái thanh toán</th>
@@ -144,7 +149,7 @@ const ManageOrder = () => {
           <tbody>
             {filteredOrders?.map((el, idx) => (
               <tr
-                className="border border-gray-500 hover:bg-gray-50 transition duration-150 "
+                className="border border-gray-500 hover:bg-gray-50 transition duration-150"
                 key={el._id}
               >
                 <td className="text-center py-2 px-2">
@@ -153,32 +158,40 @@ const ManageOrder = () => {
                     idx +
                     1}
                 </td>
-                <td className="text-center py-2 px-2 font-medium text-sm ">
-                  {el.orderBy?.firstname + " " + el.orderBy?.lastname}
-                </td>
-                <td className="text-center py-2 px-2 ">
-                  <div className="max-w-sm flex flex-col gap-3 ">
-                    {el.products?.map((n) => (
-                      <div
-                        key={n._id}
-                        className="flex items-center gap-3 border-b pb-3 last:border-none"
-                      >
-                        <div className="flex text-x flex-col items-start gap-1">
-                          <h3 className="font-medium text-red-500">
-                            {n.title}
-                          </h3>
-                          <p className="text-gray-600">{n.color}</p>
-                          <p className="text-gray-600">{`${n.quantity} sản phẩm`}</p>
-                        </div>
-                      </div>
-                    ))}
+                <td className="text-center py-2 px-2">
+                  <div className="flex flex-col ">
+                    <span className="font-medium">
+                      {el.orderBy?.firstname + " " + el.orderBy?.lastname}
+                    </span>
+
+                    <button
+                      onClick={() => setSelectedCustomer(el.orderBy)}
+                      className="underline hover:text-main hover:cursor-pointer mt-2"
+                    >
+                      Xem thông tin khách hàng
+                    </button>
                   </div>
                 </td>
-                <td className="text-center py-2  text-green-500 font-semibold">
+                <td className="text-center py-2 px-2">
+                  <div className="flex flex-col gap-2">
+                    {el.products?.reduce(
+                      (total, product) => total + product.quantity,
+                      0
+                    )}
+                    {" sản phẩm"}
+                  </div>
+                  <button
+                    className="underline hover:text-main hover:cursor-pointer mt-2"
+                    onClick={() => setSelectedOrder(el)}
+                  >
+                    Xem chi tiết
+                  </button>
+                </td>
+                <td className="text-center py-2 text-green-500 font-semibold">
                   {`${formatMoney(el.total * 25000)} VNĐ`}
                 </td>
-                <td className="py-3 px-1 text-center ">{el.paymentMethod}</td>
-                <td className="text-center py-2 ">
+                <td className="py-3 px-1 text-center">{el.paymentMethod}</td>
+                <td className="text-center py-2">
                   {editOrder?._id === el._id ? (
                     <select {...register("status")} className="form-select">
                       <option value="Cancelled">Đơn hàng bị huỷ</option>
@@ -195,11 +208,11 @@ const ManageOrder = () => {
                     el.status
                   )}
                 </td>
-                <td className="flex flex-col items-center text-center py-11 ">
+                <td className="flex flex-col items-center text-center py-11">
                   <span>{moment(el.createdAt).format("DD/MM/YYYY")}</span>
                   <span>{moment(el.updatedAt).format("HH:mm:ss")}</span>
                 </td>
-                <td className="text-center py-2 ">
+                <td className="text-center py-2">
                   <span
                     onClick={() => {
                       setEditOrder(el);
@@ -218,6 +231,82 @@ const ManageOrder = () => {
                 </td>
               </tr>
             ))}
+
+            {/* Popup Thông Tin Khách Hàng */}
+            {selectedCustomer && (
+              <div className="fixed inset-0 bg-opacity-80 flex items-center justify-center z-50">
+                <div className="bg-gray-100 rounded-lg border border-gray-400 shadow-md max-w-3xl w-full max-h-[90vh] overflow-auto p-6 relative">
+                  <button
+                    onClick={() => setSelectedCustomer(null)}
+                    className="absolute top-4 right-4 text-2xl text-gray-500 hover:text-red-500"
+                  >
+                    ×
+                  </button>
+                  <h2 className="text-xl font-bold mb-4">
+                    Thông tin khách hàng
+                  </h2>
+                  <p>
+                    <strong>Họ tên:</strong> {selectedCustomer.firstname}{" "}
+                    {selectedCustomer.lastname}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {selectedCustomer.email}
+                  </p>
+                  <p>
+                    <strong>Số điện thoại:</strong> {selectedCustomer.mobile}
+                  </p>
+                  <p>
+                    <strong>Địa chỉ giao hàng:</strong> {selectedCustomer.address}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Popup Chi Tiết Đơn Hàng */}
+            {selectedOrder && (
+              <div className="fixed inset-0 bg-opacity-80 flex items-center justify-center z-50">
+                <div className="bg-gray-100 rounded-lg border border-gray-400 shadow-md max-w-5xl w-full max-h-[90vh] overflow-auto p-6 relative">
+                  <button
+                    className="absolute top-4 right-4 text-gray-700 text-2xl font-bold hover:text-red-500"
+                    onClick={closePopup}
+                  >
+                    ×
+                  </button>
+                  <h2 className="text-xl font-bold mb-4">Chi tiết đơn hàng</h2>
+                  <div className="mt-6">
+                    <table className="w-full border-collapse border border-gray-300">
+                      <thead>
+                        <tr className="bg-gray-300">
+                          <th className="border py-2 px-4">Tên sản phẩm</th>
+                          <th className="border py-2 px-4">Màu sắc</th>
+                          <th className="border py-2 px-4">Số lượng</th>
+                          <th className="border py-2 px-4">Giá</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {selectedOrder.products.map((product) => (
+                          <tr key={product._id}>
+                            <td className="border border-gray-300 py-2 px-4">
+                              {product.title}
+                            </td>
+                            <td className="border border-gray-300 py-2 px-4">
+                              {product.color}
+                            </td>
+                            <td className="border border-gray-300 py-2 px-4">
+                              {product.quantity}
+                            </td>
+                            <td className="border border-gray-300 py-2 px-4 text-right">
+                              {formatMoney(product.price * product.quantity)}{" "}
+                              VNĐ
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
           </tbody>
         </table>
       </div>
