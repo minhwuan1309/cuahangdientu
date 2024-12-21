@@ -1,46 +1,50 @@
-import { apiGetOrders, apiGetUserOrders } from "apis"
-import { CustomSelect, InputForm, Pagination } from "components"
-import withBaseComponent from "hocs/withBaseComponent"
-import moment from "moment"
-import React, { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import { createSearchParams, useSearchParams } from "react-router-dom"
-import { statusOrders } from "utils/contants"
-import { formatMoney } from "utils/helpers"
+import { apiGetUserOrders } from "apis";
+import { CustomSelect, InputForm, Pagination } from "components";
+import withBaseComponent from "hocs/withBaseComponent";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { createSearchParams, useSearchParams } from "react-router-dom";
+import { statusOrders } from "utils/contants";
+import { formatMoney } from "utils/helpers";
 
 const History = ({ navigate, location }) => {
-  const [orders, setOrders] = useState(null)
-  const [counts, setCounts] = useState(0)
-  const [params] = useSearchParams()
+  const [orders, setOrders] = useState(null);
+  const [counts, setCounts] = useState(0);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [params] = useSearchParams();
   const {
     register,
     formState: { errors },
     watch,
-    setValue,
-  } = useForm()
-  const q = watch("q")
-  const status = watch("status")
+  } = useForm();
+  const q = watch("q");
+  const status = watch("status");
+
   const fetchPOrders = async (params) => {
     const response = await apiGetUserOrders({
       ...params,
       limit: process.env.REACT_APP_LIMIT,
-    })
+    });
     if (response.success) {
-      setOrders(response.orders)
-      setCounts(response.counts)
+      setOrders(response.orders);
+      setCounts(response.counts);
     }
-  }
+  };
+
   useEffect(() => {
-    const pr = Object.fromEntries([...params])
-    fetchPOrders(pr)
-  }, [params])
+    const pr = Object.fromEntries([...params]);
+    fetchPOrders(pr);
+  }, [params]);
 
   const handleSearchStatus = ({ value }) => {
     navigate({
       pathname: location.pathname,
       search: createSearchParams({ status: value }).toString(),
-    })
-  }
+    });
+  };
+
+  const closePopup = () => setSelectedOrder(null);
 
   return (
     <div className="w-full relative px-4">
@@ -55,7 +59,7 @@ const History = ({ navigate, location }) => {
               register={register}
               errors={errors}
               fullWidth
-              placeholder="Search orders by status,..."
+              placeholder="Tìm kiếm đơn hàng..."
             />
           </div>
           <div className="col-span-1 flex items-center">
@@ -71,7 +75,7 @@ const History = ({ navigate, location }) => {
       <table className="table-auto w-full">
         <thead>
           <tr className="border bg-sky-900 text-white border-white">
-            <th className="text-center py-2">#</th>
+            <th className="text-center py-2">Mã đơn hàng</th>
             <th className="text-center py-2">Sản phẩm</th>
             <th className="text-center py-2">Tổng tiền</th>
             <th className="text-center py-2">Trạng thái thanh toán</th>
@@ -82,31 +86,32 @@ const History = ({ navigate, location }) => {
           {orders?.map((el, idx) => (
             <tr className="border-b" key={el._id}>
               <td className="text-center py-2">
-                {(+params.get("page") > 1 ? +params.get("page") - 1 : 0) *
-                  process.env.REACT_APP_LIMIT +
-                  idx +
-                  1}
+                <div>
+                  <span className="block font-semibold">
+                    {(+params.get("page") > 1 ? +params.get("page") - 1 : 0) *
+                      process.env.REACT_APP_LIMIT +
+                      idx +
+                      1}
+                  </span>
+                  <span className="block text-gray-500 text-sm">
+                    #{el._id.slice(-6).toUpperCase()}
+                  </span>
+                </div>
               </td>
               <td className="text-center py-2 px-4">
-                <div className="max-w-sm flex flex-col gap-3">
-                  {el.products?.map((product) => (
-                    <div
-                      key={product._id}
-                      className="flex items-center gap-3 border-b pb-3 last:border-none"
-                    >
-                      <img
-                        src={product.thumbnail}
-                        alt="thumb"
-                        className="w-8 h-8 rounded-md object-cover"
-                      />
-                      <div className="flex text-x flex-col items-start gap-1">
-                        <h3 className="font-medium text-red-500">{product.title}</h3>
-                        <p className="text-gray-600">{product.color}</p>
-                        <p className="text-gray-600">{`${product.quantity} sản phẩm`}</p>
-                      </div>
-                    </div>
-                  ))}
+                <div className="flex flex-col gap-2">
+                  {el.products?.reduce(
+                    (total, product) => total + product.quantity,
+                    0
+                  )}{" "}
+                  sản phẩm
                 </div>
+                <button
+                  className="underline hover:text-main hover:cursor-pointer mt-2"
+                  onClick={() => setSelectedOrder(el)}
+                >
+                  Xem chi tiết
+                </button>
               </td>
               <td className="text-center py-2">{`${formatMoney(
                 el.total * 25000
@@ -131,8 +136,52 @@ const History = ({ navigate, location }) => {
       <div className="w-full flex justify-end my-8">
         <Pagination totalCount={counts} />
       </div>
+
+      {selectedOrder && (
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center z-50">
+          <div className="bg-gray-100 rounded-lg border border-gray-400 shadow-md max-w-5xl w-full max-h-[90vh] overflow-auto p-6 relative">
+            <button
+              className="absolute top-4 right-4 text-gray-700 text-2xl font-bold hover:text-red-500"
+              onClick={closePopup}
+            >
+              ×
+            </button>
+            <h2 className="text-xl font-bold mb-4">Chi tiết đơn hàng</h2>
+            <div className="mt-6">
+              <table className="w-full border-collapse border border-gray-300">
+                <thead>
+                  <tr className="bg-gray-300">
+                    <th className="border py-2 px-4">Tên sản phẩm</th>
+                    <th className="border py-2 px-4">Màu sắc</th>
+                    <th className="border py-2 px-4">Số lượng</th>
+                    <th className="border py-2 px-4">Giá</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedOrder.products.map((product) => (
+                    <tr key={product._id}>
+                      <td className="border border-gray-300 py-2 px-4">
+                        {product.title}
+                      </td>
+                      <td className="border border-gray-300 py-2 px-4">
+                        {product.color}
+                      </td>
+                      <td className="border border-gray-300 py-2 px-4">
+                        {product.quantity}
+                      </td>
+                      <td className="border border-gray-300 py-2 px-4 text-right">
+                        {formatMoney(product.price * product.quantity)} VNĐ
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+};
 
-export default withBaseComponent(History)
+export default withBaseComponent(History);

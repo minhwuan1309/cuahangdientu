@@ -2,75 +2,75 @@ import {
   apiDeleteOrderByAdmin,
   apiGetOrders,
   apiUpdateStatus,
-} from "apis";
-import { Button, InputForm, Pagination } from "components";
-import useDebounce from "hooks/useDebounce";
-import moment from "moment";
-import React, { useCallback, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { BiCustomize, BiEdit } from "react-icons/bi";
-import { RiCloseFill, RiDeleteBin6Line } from "react-icons/ri";
+} from "apis"
+import { Button, InputForm, Pagination } from "components"
+import useDebounce from "hooks/useDebounce"
+import moment from "moment"
+import React, { useCallback, useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
+import { BiCustomize, BiEdit } from "react-icons/bi"
+import { RiCloseFill, RiDeleteBin6Line } from "react-icons/ri"
 import {
   createSearchParams,
   useLocation,
   useNavigate,
   useSearchParams,
-} from "react-router-dom";
+} from "react-router-dom"
 
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import { formatMoney } from "utils/helpers";
+import { toast } from "react-toastify"
+import Swal from "sweetalert2"
+import { formatMoney } from "utils/helpers"
 
 const ManageOrder = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [params] = useSearchParams();
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [params] = useSearchParams()
   const {
     register,
     formState: { errors },
     watch,
     setValue,
-  } = useForm();
-  const [orders, setOrders] = useState();
-  const [counts, setCounts] = useState(0);
-  const [update, setUpdate] = useState(false);
-  const [editOrder, setEditOrder] = useState();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  } = useForm()
+  const [orders, setOrders] = useState()
+  const [counts, setCounts] = useState(0)
+  const [update, setUpdate] = useState(false)
+  const [editOrder, setEditOrder] = useState()
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedOrder, setSelectedOrder] = useState(null)
+  const [selectedCustomer, setSelectedCustomer] = useState(null)
 
   const fetchOrders = async (params) => {
     const response = await apiGetOrders({
       ...params,
       limit: process.env.REACT_APP_LIMIT,
-    });
+    })
     if (response.success) {
-      setCounts(response.counts);
-      setOrders(response.orders);
+      setCounts(response.counts)
+      setOrders(response.orders)
     }
-  };
+  }
 
   const render = useCallback(() => {
-    setUpdate(!update);
-  });
+    setUpdate(!update)
+  })
 
-  const queryDecounce = useDebounce(watch("q"), 800);
+  const queryDecounce = useDebounce(watch("q"), 800)
   useEffect(() => {
     if (queryDecounce) {
       navigate({
         pathname: location.pathname,
         search: createSearchParams({ q: queryDecounce }).toString(),
-      });
+      })
     } else
       navigate({
         pathname: location.pathname,
-      });
-  }, [queryDecounce]);
+      })
+  }, [queryDecounce])
 
   useEffect(() => {
-    const searchParams = Object.fromEntries([...params]);
-    fetchOrders(searchParams);
-  }, [params, update]);
+    const searchParams = Object.fromEntries([...params])
+    fetchOrders(searchParams)
+  }, [params, update])
 
   const handleDeleteProduct = (id) => {
     Swal.fire({
@@ -80,33 +80,33 @@ const ManageOrder = () => {
       showCancelButton: true,
     }).then(async (rs) => {
       if (rs.isConfirmed) {
-        const response = await apiDeleteOrderByAdmin(id);
-        if (response.success) toast.success(response.mes);
-        else toast.error(response.mes);
-        render();
+        const response = await apiDeleteOrderByAdmin(id)
+        if (response.success) toast.success(response.mes)
+        else toast.error(response.mes)
+        render()
       }
-    });
-  };
+    })
+  }
 
   const handleUpdate = async () => {
     const response = await apiUpdateStatus(editOrder._id, {
       status: watch("status"),
-    });
+    })
     if (response.success) {
-      toast.success(response.mes);
-      setUpdate(!update);
-      setEditOrder(null);
-    } else toast.error(response.mes);
-  };
+      toast.success(response.mes)
+      setUpdate(!update)
+      setEditOrder(null)
+    } else toast.error(response.mes)
+  }
 
   const filteredOrders = orders?.filter((el) =>
     `${el.orderBy?.firstname} ${el.orderBy?.lastname}`
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
-  );
+  )
   const closePopup = () => setSelectedOrder(null)
   
-  const closeCustomerPopup = () => setSelectedCustomer(null);
+  const closeCustomerPopup = () => setSelectedCustomer(null)
 
   return (
     <div className="w-full flex flex-col gap-4 bg-gray-50 relative">
@@ -136,7 +136,7 @@ const ManageOrder = () => {
         <table className="table-auto w-full px-4">
           <thead>
             <tr className="font-bold bg-gray-700 text-[13px] text-white">
-              <th className="text-center py-2">#</th>
+              <th className="text-center py-2">Mã đơn hàng</th>
               <th className="text-center py-2">Khách hàng</th>
               <th className="text-center py-2">Số lượng sản phẩm</th>
               <th className="text-center py-2">Tổng tiền</th>
@@ -153,10 +153,17 @@ const ManageOrder = () => {
                 key={el._id}
               >
                 <td className="text-center py-2 px-2">
-                  {(+params.get("page") > 1 ? +params.get("page") - 1 : 0) *
-                    process.env.REACT_APP_LIMIT +
-                    idx +
-                    1}
+                  <div>
+                    <span className="block font-semibold">
+                      {(+params.get("page") > 1 ? +params.get("page") - 1 : 0) *
+                        process.env.REACT_APP_LIMIT +
+                        idx +
+                        1}
+                    </span>
+                    <span className="block text-gray-500 text-sm">
+                      #{el._id.slice(-6).toUpperCase()}
+                    </span>
+                  </div>
                 </td>
                 <td className="text-center py-2 px-2">
                   <div className="flex flex-col ">
@@ -256,7 +263,8 @@ const ManageOrder = () => {
                     <strong>Số điện thoại:</strong> {selectedCustomer.mobile}
                   </p>
                   <p>
-                    <strong>Địa chỉ giao hàng:</strong> {selectedCustomer.address}
+                    <strong>Địa chỉ giao hàng:</strong>{" "}
+                    {selectedCustomer.address}
                   </p>
                 </div>
               </div>
@@ -315,6 +323,6 @@ const ManageOrder = () => {
       </div>
     </div>
   );
-};
+}
 
-export default ManageOrder;
+export default ManageOrder

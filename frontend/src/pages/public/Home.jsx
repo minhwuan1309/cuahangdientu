@@ -13,6 +13,7 @@ import { useSelector } from "react-redux"
 import icons from "../../utils/icons"
 import withBaseComponent from "hocs/withBaseComponent"
 import { createSearchParams } from "react-router-dom"
+// import Chatbot from "components/chatbot/Chatbot"
 
 const { IoIosArrowForward } = icons
 const Home = ({ navigate }) => {
