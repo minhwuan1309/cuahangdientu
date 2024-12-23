@@ -77,4 +77,10 @@ export const apiDeleteOrderByAdmin = (oid) =>
     method: "delete",
   })
 
-  
+export const apiCheckCoupon = (data) =>
+  axios({
+    url: "/coupon/check",
+    method: "post",
+    data,
+  });
+

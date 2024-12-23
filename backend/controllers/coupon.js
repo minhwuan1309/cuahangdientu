@@ -50,10 +50,41 @@ const deleteCoupon = asyncHandler(async (req, res) => {
   });
 });
 
+const checkCoupon = asyncHandler(async (req, res) => {
+  const { coupon } = req.body;
+
+  if (!coupon) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Vui lòng nhập mã giảm giá" });
+  }
+
+  const foundCoupon = await Coupon.findOne({ name: coupon.toUpperCase() });
+
+  if (!foundCoupon) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Mã giảm giá không hợp lệ" });
+  }
+
+  if (new Date(foundCoupon.expiry) < new Date()) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Mã giảm giá đã hết hạn" });
+  }
+
+  return res.status(200).json({
+    success: true,
+    discount: foundCoupon.discount,
+    message: "Mã giảm giá hợp lệ",
+  });
+});
+
 
 module.exports = {
     createNewCoupon,
     getCoupons,
     updateCoupon,
-    deleteCoupon
+    deleteCoupon,
+    checkCoupon
 }

@@ -94,7 +94,7 @@ const History = ({ navigate, location }) => {
                       1}
                   </span>
                   <span className="block text-gray-500 text-sm">
-                    #{el._id.slice(-6).toUpperCase()}
+                    #{el._id.slice(-10).toUpperCase()}
                   </span>
                 </div>
               </td>
@@ -113,9 +113,23 @@ const History = ({ navigate, location }) => {
                   Xem chi tiết
                 </button>
               </td>
-              <td className="text-center py-2">{`${formatMoney(
-                el.total * 25000
-              )} VNĐ`}</td>
+              <td className="text-center py-2 font-semibold">
+                {el.discount > 0 ? (
+                  <>
+                    <span className="text-green-500">
+                      {formatMoney(el.finalTotal * 25000)} VNĐ
+                    </span>
+                    <br />
+                    <span className="text-gray-500 text-sm">
+                      Có áp dụng mã giảm giá: {el.discount}%
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-green-500">
+                    {formatMoney(el.total * 25000)} VNĐ
+                  </span>
+                )}
+              </td>
               <td className="text-center py-2">
                 {el.status === "Cancelled"
                   ? "Đơn hàng bị huỷ"

@@ -1,30 +1,37 @@
-import React, { useEffect, useState } from "react";
-import payment from "assets/payment.svg";
-import { useSelector } from "react-redux";
-import { formatMoney, calculateTotal } from "utils/helpers";
-import { Congrat, Paypal } from "components";
-import withBaseComponent from "hocs/withBaseComponent";
-import { getCurrent } from "store/user/asyncActions";
-import Swal from "sweetalert2";
-import { apiCreateOrder } from "apis";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react"
+import payment from "assets/payment.svg"
+import { useSelector } from "react-redux"
+import { formatMoney, calculateTotal } from "utils/helpers"
+import { Congrat, Paypal } from "components"
+import withBaseComponent from "hocs/withBaseComponent"
+import { getCurrent } from "store/user/asyncActions"
+import Swal from "sweetalert2"
+import { apiCreateOrder } from "apis"
+import { Link } from "react-router-dom"
+import { apiCheckCoupon } from "apis"
 
 
 const Checkout = ({ dispatch, navigate }) => {
-  const { currentCart, current } = useSelector((state) => state.user);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("");
-
+  const { currentCart, current } = useSelector((state) => state.user)
+  const [isSuccess, setIsSuccess] = useState(false)
+  const [paymentMethod, setPaymentMethod] = useState("")
+  const [couponCode, setCouponCode] = useState("")
+  const [discount, setDiscount] = useState(0)
+  const total = currentCart?.reduce(
+    (sum, el) => sum + el.price * el.quantity,
+    0
+  );
+  const [finalTotal, setFinalTotal] = useState(total)
 
   useEffect(() => {
-    if (isSuccess) dispatch(getCurrent());
-  }, [isSuccess]);
+    if (isSuccess) dispatch(getCurrent())
+  }, [isSuccess])
 
   useEffect(() => {
     if (paymentMethod === "COD") {
       const total = Math.round(
         +currentCart?.reduce((sum, el) => +el?.price * el.quantity + sum, 0)
-      );
+      )
       Swal.fire({
         icon: "info",
         title: "Thanh toán",
@@ -37,13 +44,13 @@ const Checkout = ({ dispatch, navigate }) => {
         cancelButtonText: "Quay lại",
       }).then((result) => {
         if (result.isConfirmed) {
-          handleSaveOrder();
+          handleSaveOrder()
         } else {
-          setPaymentMethod("");
+          setPaymentMethod("")
         }
-      });
+      })
     }
-  }, [paymentMethod]);
+  }, [paymentMethod])
 
   const handleSaveOrder = async () => {
     const payload = {
@@ -52,17 +59,42 @@ const Checkout = ({ dispatch, navigate }) => {
         +currentCart?.reduce((sum, el) => +el?.price * el.quantity + sum, 0) /
           25000
       ),
+      finalTotal: Math.round(finalTotal / 25000), // Include finalTotal
+      discount, // Include discount
       address: current?.address,
-      paymentMethod
+      paymentMethod,
     };
     const response = await apiCreateOrder({ ...payload, status: "Pending" });
+    console.log(response);
     if (response.success) {
       setIsSuccess(true);
       setTimeout(() => {
-        Swal.fire("Thành công!", "Đơn hàng của bạn đã dược đặt", "success").then(() => {
+        Swal.fire(
+          "Thành công!",
+          "Đơn hàng của bạn đã được đặt",
+          "success"
+        ).then(() => {
           navigate("/");
         });
       }, 1500);
+    }
+  };
+
+
+  const handleApplyCoupon = async () => {
+    const response = await apiCheckCoupon({ coupon: couponCode });
+
+    if (response.success) {
+      const discountAmount = (response.discount / 100) * total; // Tính giảm giá
+      setDiscount(response.discount);
+      setFinalTotal(total - discountAmount); // Cập nhật tổng tiền sau giảm giá
+      Swal.fire(
+        "Thành công!",
+        `Mã giảm giá ${response.discount}% đã được áp dụng`,
+        "success"
+      );
+    } else {
+      Swal.fire("Thất bại!", response.message, "error");
     }
   };
 
@@ -98,29 +130,54 @@ const Checkout = ({ dispatch, navigate }) => {
                     <td className="p-3">{el.title}</td>
                     <td className="p-3 text-center">{el.quantity}</td>
                     <td className="p-3 text-right">
-                      {formatMoney(el.price * el.quantity) +" VNĐ"}
+                      {formatMoney(el.price * el.quantity) + " VNĐ"}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+          <div className="bg-white border border-gray-300 shadow-md rounded p-4">
+            <div className="flex justify-between items-center text-lg mb-2">
+              <input
+                type="text"
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value)}
+                placeholder="Nhập mã giảm giá"
+                className="border rounded px-2 py-1 w-[60%]"
+              />
+              <button
+                onClick={handleApplyCoupon}
+                className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
+              >
+                Áp dụng
+              </button>
+            </div>
+            {discount > 0 && (
+              <p className="text-green-500 text-lg mt-2">
+                Đã áp dụng giảm giá: {discount}% (Tiết kiệm:{" "}
+                {formatMoney(total - finalTotal)} VND)
+              </p>
+            )}
+            <p className="text-lg font-bold">
+              Tổng tiền sau giảm giá:{" "}
+              <span className="text-main">{formatMoney(finalTotal)} VND</span>
+            </p>
+          </div>
 
-          <div className="bg-white shadow-md rounded p-4">
+          <div className="bg-white shadow-md rounded p-4 mt-4">
             <div className="flex justify-between text-lg mb-2">
               <span className="font-medium">Tổng tiền:</span>
-              <span className="text-main font-bold">{`${formatMoney(
-                currentCart?.reduce(
-                  (sum, el) => +el?.price * el.quantity + sum,
-                  0
-                )
-              )} VND`}</span>
+              <span className="text-main font-bold">
+                {formatMoney(discount > 0 ? finalTotal : total)} VND
+              </span>
             </div>
             <div className="flex justify-between text-lg">
               <span className="font-medium">Địa chỉ:</span>
               <span className="text-main font-bold">{current?.address}</span>
             </div>
           </div>
+          
 
           <div className="bg-white p-4 rounded shadow-md border border-gray-300">
             <h3 className="text-lg font-semibold mb-3">
@@ -172,6 +229,6 @@ const Checkout = ({ dispatch, navigate }) => {
       </div>
     </div>
   );
-};
+}
 
-export default withBaseComponent(Checkout);
+export default withBaseComponent(Checkout)

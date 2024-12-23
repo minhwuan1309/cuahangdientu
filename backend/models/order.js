@@ -14,10 +14,19 @@ var orderSchema = new mongoose.Schema(
     ],
     status: {
       type: String,
-      default: "Cancelled",
+      default: "Pending",
       enum: ["Cancelled", "Succeed", "Pending"],
     },
     total: Number,
+    discount: {
+      type: Number, // Phần trăm giảm giá
+      default: 0,
+    },
+    coupon: {
+      type: String, // Mã giảm giá
+      default: null,
+    },
+    finalTotal: Number, // Tổng tiền sau giảm giá
     orderBy: {
       type: mongoose.Types.ObjectId,
       ref: "User",
@@ -25,12 +34,13 @@ var orderSchema = new mongoose.Schema(
     paymentMethod: {
       type: String,
       enum: ["COD", "PAYPAL", "MOMO"],
-      required: true, 
+      required: true,
     },
   },
   {
     timestamps: true,
   }
 );
+
 
 module.exports = mongoose.model("Order", orderSchema)

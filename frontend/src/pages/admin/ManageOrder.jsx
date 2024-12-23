@@ -161,7 +161,7 @@ const ManageOrder = () => {
                         1}
                     </span>
                     <span className="block text-gray-500 text-sm">
-                      #{el._id.slice(-6).toUpperCase()}
+                      #{el._id.slice(-10).toUpperCase()}
                     </span>
                   </div>
                 </td>
@@ -194,9 +194,24 @@ const ManageOrder = () => {
                     Xem chi tiết
                   </button>
                 </td>
-                <td className="text-center py-2 text-green-500 font-semibold">
-                  {`${formatMoney(el.total * 25000)} VNĐ`}
+                <td className="text-center py-2 font-semibold">
+                  {el.discount > 0 ? (
+                    <>
+                      <span className="text-green-500">
+                        {formatMoney(el.finalTotal * 25000)} VNĐ
+                      </span>
+                      <br />
+                      <span className="text-gray-500 text-sm">
+                        Có áp dụng mã giảm giá: {el.discount}%
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-green-500">
+                      {formatMoney(el.total * 25000)} VNĐ
+                    </span>
+                  )}
                 </td>
+
                 <td className="py-3 px-1 text-center">{el.paymentMethod}</td>
                 <td className="text-center py-2">
                   {editOrder?._id === el._id ? (
@@ -304,8 +319,8 @@ const ManageOrder = () => {
                               {product.quantity}
                             </td>
                             <td className="border border-gray-300 py-2 px-4 text-right">
-                              {formatMoney(product.price * product.quantity)}{" "}
-                              VNĐ
+                              {formatMoney(product.price * product.quantity)}
+                              {" VNĐ"}
                             </td>
                           </tr>
                         ))}

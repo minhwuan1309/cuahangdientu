@@ -10,19 +10,35 @@ const Product = require("../models/product");
 
 const createOrder = asyncHandler(async (req, res) => {
   const { _id } = req.user;
-  const { products, total, address, status, paymentMethod } = req.body;
+  const {
+    products,
+    total,
+    address,
+    status,
+    paymentMethod,
+    discount,
+    finalTotal,
+  } = req.body;
+
   const user = await User.findById(_id);
   if (!user) throw new Error("Không tìm thấy người dùng");
-  if (address) await User.findByIdAndUpdate(_id, { address, cart: [] })
-  
-  const orderData = { products, total, orderBy: _id, paymentMethod }
+  if (address) await User.findByIdAndUpdate(_id, { address, cart: [] });
+
+  const orderData = {
+    products,
+    total,
+    finalTotal: finalTotal || total, // Use finalTotal if provided
+    discount: discount || 0, // Use discount if provided
+    orderBy: _id,
+    paymentMethod,
+  };
   if (status) orderData.status = status;
 
-  const newOrder = await Order.create(orderData)
-  if (!newOrder) throw new Error("Tạo đơn hàng thất bại")
-    await User.findByIdAndUpdate(_id, {
-      $push: { orderHistory: newOrder._id },
-    });
+  const newOrder = await Order.create(orderData);
+  if (!newOrder) throw new Error("Tạo đơn hàng thất bại");
+  await User.findByIdAndUpdate(_id, {
+    $push: { orderHistory: newOrder._id },
+  });
 
   try {
     for (const item of products) {
@@ -30,22 +46,23 @@ const createOrder = asyncHandler(async (req, res) => {
         item.product,
         { $inc: { quantity: -item.quantity, sold: item.quantity } },
         { new: true }
-      )
-
-      if (!updatedProduct) throw new Error(`Sản phẩm với ID ${item.product} không tồn tại.`)
+      );
+      if (!updatedProduct)
+        throw new Error(`Sản phẩm với ID ${item.product} không tồn tại.`);
     }
-    await sendOrderConfirmationEmail(user.email, newOrder)
+    await sendOrderConfirmationEmail(user.email, newOrder);
     res.json({
       success: true,
       message: "Đơn hàng đã được tạo thành công",
       order: newOrder,
     });
   } catch (error) {
-    console.error("Lỗi trong quá trình xử lý đơn hàng:", error.message)
-    await Order.findByIdAndDelete(newOrder._id)
-    throw new Error(`Quá trình xử lý đơn hàng thất bại: ${error.message}`)
+    console.error("Lỗi trong quá trình xử lý đơn hàng:", error.message);
+    await Order.findByIdAndDelete(newOrder._id);
+    throw new Error(`Quá trình xử lý đơn hàng thất bại: ${error.message}`);
   }
 });
+
 
 const updateStatus = asyncHandler(async (req, res) => {
   const { oid } = req.params;
@@ -98,7 +115,7 @@ const getUserOrders = asyncHandler(async (req, res) => {
   const limit = +req.query.limit || process.env.LIMIT_PRODUCTS;
   const skip = (page - 1) * limit;
   queryCommand.skip(skip).limit(limit);
-  
+
   try {
     // Lấy danh sách đơn hàng của người dùng
     const response = await queryCommand;
@@ -132,24 +149,24 @@ const getUserOrders = asyncHandler(async (req, res) => {
 });
 const getOrders = asyncHandler(async (req, res) => {
   const queries = { ...req.query };
+
   // Tách các trường đặc biệt ra khỏi query
   const excludeFields = ["limit", "sort", "page", "fields"];
   excludeFields.forEach((el) => delete queries[el]);
-  
 
   // Format lại các operators cho đúng cú pháp mongoose
   let queryString = JSON.stringify(queries);
   queryString = queryString.replace(
     /\b(gte|gt|lt|lte)\b/g,
-    (macthedEl) => `$${macthedEl}`
+    (matchedEl) => `$${matchedEl}`
   );
   const formatedQueries = JSON.parse(queryString);
   const qr = { ...formatedQueries };
+
   let queryCommand = Order.find(qr).populate(
     "orderBy",
     "firstname lastname email mobile address"
   );
-
 
   // Sorting
   if (req.query.sort) {
@@ -168,18 +185,24 @@ const getOrders = asyncHandler(async (req, res) => {
   const limit = +req.query.limit || process.env.LIMIT_PRODUCTS;
   const skip = (page - 1) * limit;
   queryCommand.skip(skip).limit(limit);
+
   // Execute query
-  // Số lượng sp thỏa mãn điều kiện !== số lượng sp trả về 1 lần gọi API
-  queryCommand.exec(async (err, response) => {
-    if (err) throw new Error(err.message);
-    const counts = await Order.find(qr).countDocuments();
-    return res.status(200).json({
-      success: response ? true : false,
-      counts,
-      orders: response ? response : "Không thể lấy danh sách sản phẩm",
-    });
+  const response = await queryCommand;
+
+  const orders = response.map((order) => ({
+    ...order.toObject(),
+    finalTotal: order.total - order.total * (order.discount / 100),
+  }));
+
+  const counts = await Order.find(qr).countDocuments();
+
+  return res.status(200).json({
+    success: orders.length > 0,
+    counts,
+    orders,
   });
 });
+
 const deleteOrderByAdmin = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const rs = await Order.findByIdAndDelete(id);
@@ -376,7 +399,7 @@ const sendOrderConfirmationEmail = async (userEmail, orderDetails) => {
                     product.quantity
                   }</td>
                   <td style="border: 1px solid #ddd; padding: 8px;">${formatMoney(
-                    product.price*product.quantity
+                    product.price * product.quantity
                   )} VNĐ</td>
                 </tr>
               `

@@ -104,12 +104,41 @@ const ManageUser = () => {
                     <td className="py-3 px-6">{el.firstname}</td>
                     <td className="py-3 px-6">{el.lastname}</td>
                     <td className="py-3 px-6">
-                      {roles.find((role) => +role.code === +el.role)?.value}
+                      {editElm?._id === el._id ? (
+                        <Select
+                          register={register}
+                          fullWidth
+                          errors={errors}
+                          defaultValue={+el.role}
+                          id={"role"}
+                          validate={{ required: "Require fill." }}
+                          options={roles}
+                        />
+                      ) : (
+                        <span>
+                          {roles.find((role) => +role.code === +el.role)?.value}
+                        </span>
+                      )}
                     </td>
+
                     <td className="py-3 px-6">{el.mobile}</td>
-                    <td className="py-3 px-6 text-center">
-                      {el.isBlocked ? "Chặn" : "Kích hoạt"}
+
+                    <td className="py-3 px-6">
+                      {editElm?._id === el._id ? (
+                        <Select
+                          register={register}
+                          fullWidth
+                          errors={errors}
+                          defaultValue={el.isBlocked}
+                          id={"isBlocked"}
+                          validate={{ required: "Require fill." }}
+                          options={blockStatus}
+                        />
+                      ) : (
+                        <span>{el.isBlocked ? "Chặn" : "Kích hoạt"}</span>
+                      )}
                     </td>
+
                     <td className="py-3 px-6 text-center">
                       <div className="flex flex-col items-center">
                         <span>{moment(el.createdAt).format("DD/MM/YYYY")}</span>
