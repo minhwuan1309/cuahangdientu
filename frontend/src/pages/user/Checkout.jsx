@@ -17,6 +17,7 @@ const Checkout = ({ dispatch, navigate }) => {
   const [paymentMethod, setPaymentMethod] = useState("")
   const [couponCode, setCouponCode] = useState("")
   const [discount, setDiscount] = useState(0)
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const total = currentCart?.reduce(
     (sum, el) => sum + el.price * el.quantity,
     0
@@ -95,6 +96,16 @@ const Checkout = ({ dispatch, navigate }) => {
       );
     } else {
       Swal.fire("Thất bại!", response.message, "error");
+    }
+  };
+
+  const handleSelectProduct = (product, isChecked) => {
+    if (isChecked) {
+      setSelectedProducts([...selectedProducts, product]);
+    } else {
+      setSelectedProducts(
+        selectedProducts.filter((item) => item._id !== product._id)
+      );
     }
   };
 

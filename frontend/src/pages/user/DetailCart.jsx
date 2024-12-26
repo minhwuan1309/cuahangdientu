@@ -7,10 +7,14 @@ import Swal from "sweetalert2";
 import { formatMoney } from "utils/helpers";
 import path from "utils/path";
 import { updateCart, removeFromCart } from "store/user/userSlice";
+import { useState, useCallback } from "react";
+import { apiRemoveCart } from "apis";
+import { getCurrent } from "store/user/asyncActions";
 
 const DetailCart = ({ location, navigate }) => {
   const dispatch = useDispatch();
   const { currentCart, current } = useSelector((state) => state.user);
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const handleSubmit = () => {
     if (currentCart?.length === 0) {
       return Swal.fire({
@@ -47,7 +51,12 @@ const DetailCart = ({ location, navigate }) => {
       navigate(`/${path.CHECKOUT}`);
     }
   };
-
+  const removeCart = async (pid, color) => {
+          const response = await apiRemoveCart(pid, color)
+          if (response.success) {
+              dispatch(getCurrent())
+          }
+      }
   const handleIncreaseQuantity = (productId, color, currentQuantity) => {
     dispatch(
       updateCart({ pid: productId, color, quantity: currentQuantity + 1 })
@@ -61,6 +70,15 @@ const DetailCart = ({ location, navigate }) => {
       );
     } else {
       dispatch(removeFromCart(productId)); // Xóa sản phẩm nếu số lượng <= 1
+    }
+  };
+  const toggleProductSelection = (product) => {
+    if (selectedProducts.find((p) => p._id === product._id)) {
+      setSelectedProducts(
+        selectedProducts.filter((p) => p._id !== product._id)
+      );
+    } else {
+      setSelectedProducts([...selectedProducts, product]);
     }
   };
 
@@ -85,6 +103,12 @@ const DetailCart = ({ location, navigate }) => {
             key={el._id}
             className="flex items-center border-b p-4 bg-white rounded-lg shadow-sm my-2"
           >
+            <input
+              type="checkbox"
+              className="form-checkbox w-5 h-5 text-blue-600 "
+              checked={!!selectedProducts.find((p) => p._id === el._id)}
+              onChange={() => toggleProductSelection(el)}
+            />
             {/* Hình ảnh sản phẩm */}
             <img
               src={el.thumbnail}
@@ -140,6 +164,12 @@ const DetailCart = ({ location, navigate }) => {
                 {formatMoney(el.price * el.quantity)} VNĐ
               </span>
             </div>
+            <button
+              className="ml-4 text-red-500 hover:text-red-700 transition"
+              onClick={() => removeCart(el.product?._id, el.color)}
+            >
+              Xóa
+            </button>
           </div>
         ))}
       </div>
@@ -149,7 +179,7 @@ const DetailCart = ({ location, navigate }) => {
           <span>Tạm tính:</span>
           <span className="text-lg font-bold text-main ">
             {`${formatMoney(
-              currentCart?.reduce(
+              selectedProducts?.reduce(
                 (sum, el) => +el?.price * el.quantity + sum,
                 0
               )
