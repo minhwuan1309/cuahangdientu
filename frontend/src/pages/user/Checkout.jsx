@@ -7,18 +7,20 @@ import withBaseComponent from "hocs/withBaseComponent"
 import { getCurrent } from "store/user/asyncActions"
 import Swal from "sweetalert2"
 import { apiCreateOrder } from "apis"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { apiCheckCoupon } from "apis"
 
 
 const Checkout = ({ dispatch, navigate }) => {
-  const { currentCart, current } = useSelector((state) => state.user)
+  const location = useLocation()
+  const { current } = useSelector((state) => state.user);
   const [isSuccess, setIsSuccess] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState("")
   const [couponCode, setCouponCode] = useState("")
   const [discount, setDiscount] = useState(0)
-  const [selectedProducts, setSelectedProducts] = useState([]);
-  const total = currentCart?.reduce(
+  const selectedProducts =
+    JSON.parse(localStorage.getItem("selectedProducts")) || [];
+  const total = selectedProducts?.reduce(
     (sum, el) => sum + el.price * el.quantity,
     0
   );
@@ -31,7 +33,7 @@ const Checkout = ({ dispatch, navigate }) => {
   useEffect(() => {
     if (paymentMethod === "COD") {
       const total = Math.round(
-        +currentCart?.reduce((sum, el) => +el?.price * el.quantity + sum, 0)
+        +selectedProducts?.reduce((sum, el) => +el?.price * el.quantity + sum, 0)
       )
       Swal.fire({
         icon: "info",
@@ -55,9 +57,9 @@ const Checkout = ({ dispatch, navigate }) => {
 
   const handleSaveOrder = async () => {
     const payload = {
-      products: currentCart,
+      products: selectedProducts,
       total: Math.round(
-        +currentCart?.reduce((sum, el) => +el?.price * el.quantity + sum, 0) /
+        +selectedProducts?.reduce((sum, el) => +el?.price * el.quantity + sum, 0) /
           25000
       ),
       finalTotal: Math.round(finalTotal / 25000), // Include finalTotal
@@ -66,8 +68,14 @@ const Checkout = ({ dispatch, navigate }) => {
       paymentMethod,
     };
     const response = await apiCreateOrder({ ...payload, status: "Pending" });
-    console.log(response);
     if (response.success) {
+      const allCartProducts =
+        JSON.parse(localStorage.getItem("cartProducts")) || [];
+      const remainingProducts = allCartProducts.filter(
+        (product) =>
+          !selectedProducts.find((selected) => selected._id === product._id)
+      );
+      localStorage.setItem("cartProducts", JSON.stringify(remainingProducts));
       setIsSuccess(true);
       setTimeout(() => {
         Swal.fire(
@@ -99,16 +107,6 @@ const Checkout = ({ dispatch, navigate }) => {
     }
   };
 
-  const handleSelectProduct = (product, isChecked) => {
-    if (isChecked) {
-      setSelectedProducts([...selectedProducts, product]);
-    } else {
-      setSelectedProducts(
-        selectedProducts.filter((item) => item._id !== product._id)
-      );
-    }
-  };
-
   return (
     <div className="container mx-auto p-6">
       {isSuccess && <Congrat />}
@@ -133,7 +131,7 @@ const Checkout = ({ dispatch, navigate }) => {
                 </tr>
               </thead>
               <tbody>
-                {currentCart?.map((el) => (
+                {selectedProducts?.map((el) => (
                   <tr
                     className="border-b border-gray-300 hover:bg-gray-50"
                     key={el._id}
@@ -208,9 +206,9 @@ const Checkout = ({ dispatch, navigate }) => {
               <div className="mt-4">
                 <Paypal
                   payload={{
-                    products: currentCart,
+                    products: selectedProducts,
                     total: Math.round(
-                      +currentCart?.reduce(
+                      +selectedProducts?.reduce(
                         (sum, el) => +el?.price * el.quantity + sum,
                         0
                       ) / 25000
@@ -220,7 +218,7 @@ const Checkout = ({ dispatch, navigate }) => {
                   }}
                   setIsSuccess={setIsSuccess}
                   amount={Math.round(
-                    +currentCart?.reduce(
+                    +selectedProducts?.reduce(
                       (sum, el) => +el?.price * el.quantity + sum,
                       0
                     ) / 25000

@@ -15,16 +15,14 @@ const DetailCart = ({ location, navigate }) => {
   const dispatch = useDispatch();
   const { currentCart, current } = useSelector((state) => state.user);
   const [selectedProducts, setSelectedProducts] = useState([]);
+
   const handleSubmit = () => {
-    if (currentCart?.length === 0) {
+    if (!selectedProducts.length) {
       return Swal.fire({
         icon: "info",
-        title: "Giỏ hàng của bạn đang trống",
-        text: "Vui lòng thêm sản phẩm vào giỏ hàng trước khi thanh toán.",
-        showCancelButton: false,
-        confirmButtonText: "Quay lại trang chủ",
-      }).then(() => {
-        navigate(`/${path.HOME}`);
+        title: "Chưa chọn sản phẩm",
+        text: "Vui lòng chọn ít nhất một sản phẩm để thanh toán.",
+        confirmButtonText: "Đã hiểu",
       });
     }
 
@@ -33,9 +31,8 @@ const DetailCart = ({ location, navigate }) => {
         icon: "info",
         title: "Chưa hoàn tất!",
         text: "Vui lòng cập nhật địa chỉ của bạn trước khi thanh toán.",
-        showCancelButton: true,
-        showConfirmButton: true,
         confirmButtonText: "Cập nhật",
+        showCancelButton: true,
         cancelButtonText: "Hủy",
       }).then((result) => {
         if (result.isConfirmed) {
@@ -47,10 +44,13 @@ const DetailCart = ({ location, navigate }) => {
           });
         }
       });
-    } else {
-      navigate(`/${path.CHECKOUT}`);
     }
+    localStorage.setItem("selectedProducts", JSON.stringify(selectedProducts));
+    navigate({
+      pathname: `/${path.CHECKOUT}`,
+    });
   };
+
   const removeCart = async (pid, color) => {
           const response = await apiRemoveCart(pid, color)
           if (response.success) {
@@ -125,11 +125,11 @@ const DetailCart = ({ location, navigate }) => {
             </div>
 
             {/* Số lượng và nút tăng/giảm */}
-            <div className="flex items-center justify-between w-1/3">
+            <div className="flex items-center justify-between w-[28.8%]">
               <div className="flex items-center">
                 {/* Nút giảm */}
                 <button
-                  className="w-8 h-8 bg-gray-200 flex items-center justify-center rounded-md hover:bg-gray-300 transition"
+                  className="w-7 h-7 bg-gray-300 flex items-center justify-center rounded-md hover:bg-blue-400 transition"
                   onClick={() =>
                     handleDecreaseQuantity(
                       el.product?._id,
@@ -142,11 +142,11 @@ const DetailCart = ({ location, navigate }) => {
                 </button>
 
                 {/* Số lượng */}
-                <span className="mx-4 text-gray-700">{el.quantity}</span>
+                <span className="mx-4 text-gray-700 text-xl">{el.quantity}</span>
 
                 {/* Nút tăng */}
                 <button
-                  className="w-8 h-8 bg-gray-200 flex items-center justify-center rounded-md hover:bg-gray-300 transition"
+                  className="w-7 h-7 bg-gray-300 flex items-center justify-center rounded-md hover:bg-blue-400 transition"
                   onClick={() =>
                     handleIncreaseQuantity(
                       el.product?._id,
@@ -164,12 +164,12 @@ const DetailCart = ({ location, navigate }) => {
                 {formatMoney(el.price * el.quantity)} VNĐ
               </span>
             </div>
-            <button
-              className="ml-4 text-red-500 hover:text-red-700 transition"
+            <Button
+              className="m-2 text-red-500 hover:text-red-700 transition"
               onClick={() => removeCart(el.product?._id, el.color)}
             >
               Xóa
-            </button>
+            </Button>
           </div>
         ))}
       </div>
